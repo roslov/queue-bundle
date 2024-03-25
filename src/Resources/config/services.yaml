@@ -1,0 +1,94 @@
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: false
+    autoconfigure: true
+    public: false
+
+  roslov_queue.obfuscator:
+    class: Roslov\LogObfuscator\LogObfuscator
+  roslov_queue.producer_facade:
+    class: Roslov\QueueBundle\Producer\ProducerFacade
+    arguments:
+      - '@roslov_queue.event_processor'
+  roslov_queue.trace_shortener:
+    class: Roslov\QueueBundle\Helper\ExceptionShortener
+  roslov_queue.payload_factory:
+    class: Roslov\QueueBundle\Factory\PayloadFactory
+    arguments:
+      - Error: Roslov\QueueBundle\Dto\Error
+        Trigger: Roslov\QueueBundle\Dto\Trigger
+        Response.Empty: Roslov\QueueBundle\Dto\EmptyResponse
+  roslov_queue.message_factory:
+    class: Roslov\QueueBundle\Factory\MessageFactory
+    arguments:
+      - '@roslov_queue.payload_factory'
+      - 'my_service'
+  roslov_queue.id_generator:
+    class: Roslov\QueueBundle\Generator\IdGenerator
+  roslov_queue.rabbitmq.connection_params_provider:
+    class: Roslov\QueueBundle\RabbitMQ\ConnectionParametersProvider
+    arguments:
+      - false
+      - false
+  roslov_queue.serializer.message_payload_serializer:
+    class: Roslov\QueueBundle\Serializer\MessagePayloadSerializer
+    arguments:
+      - '@roslov_queue.payload_factory'
+      - '@roslov_queue.message_factory'
+  roslov_queue.rpc.client:
+    class: Roslov\QueueBundle\Rpc\Client
+    arguments:
+      - '@old_sound_rabbit_mq.roslov_queue_rpc'
+      - '@roslov_queue.serializer.message_payload_serializer'
+      - '@roslov_queue.id_generator'
+  roslov_queue.rpc.server_callback:
+    class: Roslov\QueueBundle\Rpc\Server
+    arguments:
+      - '@roslov_queue.serializer.message_payload_serializer'
+      - '@doctrine.orm.default_entity_manager'
+      - false
+      - []
+      - ~
+  roslov_queue.producer_locator:
+    class: Roslov\QueueBundle\Producer\ProducerLocator
+    arguments:
+      - '@service_container'
+  roslov_queue.event_processor:
+    class: Roslov\QueueBundle\Processor\EventProcessor
+    arguments:
+      - false
+      - true
+      - '@roslov_queue.producer_locator'
+      - '@doctrine.orm.default_entity_manager'
+      - '@logger'
+      - '@roslov_queue.serializer.message_payload_serializer'
+      - '@roslov_queue.obfuscator'
+  roslov_queue.subscriber.event_sender:
+    class: Roslov\QueueBundle\Subscriber\EventSenderSubscriber
+    arguments:
+      - '@roslov_queue.event_processor'
+      - false
+  roslov_queue.exception_sender:
+    class: Roslov\QueueBundle\Sender\ExceptionSender
+    arguments:
+      - '@roslov_queue.producer_facade'
+      - '@roslov_queue.trace_shortener'
+      - 'service_name'
+  roslov_queue.exception_subscriber:
+    class: Roslov\QueueBundle\Subscriber\ExceptionSubscriber
+    arguments:
+      - false
+      - ~
+      - '@roslov_queue.exception_sender'
+
+  Roslov\QueueBundle\Serializer\MessagePayloadSerializer:
+    alias: roslov_queue.serializer.message_payload_serializer
+  Roslov\QueueBundle\Subscriber\EventSenderSubscriber:
+    alias: roslov_queue.subscriber.event_sender
+  Roslov\QueueBundle\Rpc\ClientInterface:
+    alias: roslov_queue.rpc.client
+  Roslov\QueueBundle\Processor\EventProcessor:
+    alias: roslov_queue.event_processor
+  Roslov\QueueBundle\Sender\ExceptionSender:
+    alias: roslov_queue.exception_sender
