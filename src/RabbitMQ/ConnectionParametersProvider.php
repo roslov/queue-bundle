@@ -10,6 +10,8 @@ use OldSound\RabbitMqBundle\Provider\ConnectionParametersProviderInterface;
  * Class ConnectionParametersProvider — changes RabbitMQ params dynamically.
  *
  * It adds SSL context when needed.
+ *
+ * If is used for RabbitMQ bundle v2.11.1 and older. For newer versions, use {@link SimpleSslContextProvider}.
  */
 final class ConnectionParametersProvider implements ConnectionParametersProviderInterface
 {

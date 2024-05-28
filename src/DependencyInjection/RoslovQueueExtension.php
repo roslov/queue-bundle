@@ -44,6 +44,8 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
         $container->getDefinition('roslov_queue.rabbitmq.connection_params_provider')
             ->replaceArgument(0, $config['ssl_enabled'])
             ->replaceArgument(1, $config['legacy_rabbitmq_bundle']);
+        $container->getDefinition('roslov_queue.rabbitmq.simple_ssl_context_provider')
+            ->replaceArgument(0, $config['ssl_enabled']);
         $container->getDefinition('roslov_queue.rpc.server_callback')
             ->replaceArgument(1, $emRef)
             ->replaceArgument(2, $config['rpc_server']['enabled'])
