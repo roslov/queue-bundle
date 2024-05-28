@@ -119,8 +119,9 @@ old_sound_rabbit_mq:
       read_write_timeout: 60
       keepalive: false
       heartbeat: 30
-      # Use this parameter only if you need to use SSL connection to RabbitMQ
-      connection_parameters_provider: roslov_queue.rabbitmq.connection_params_provider
+      # Use this parameter only if you need to use SSL connection to RabbitMQ.
+      # For RabbitMQ bundle v2.11.1 or older, use `roslov_queue.rabbitmq.connection_params_provider`
+      connection_parameters_provider: roslov_queue.rabbitmq.simple_ssl_context_provider
   # Producers (if used)
   producers:
     user_created:

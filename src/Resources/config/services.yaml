@@ -31,6 +31,10 @@ services:
     arguments:
       - false
       - false
+  roslov_queue.rabbitmq.simple_ssl_context_provider:
+    class: Roslov\QueueBundle\RabbitMQ\SimpleSslContextProvider
+    arguments:
+      - false
   roslov_queue.serializer.message_payload_serializer:
     class: Roslov\QueueBundle\Serializer\MessagePayloadSerializer
     arguments:
