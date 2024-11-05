@@ -109,7 +109,7 @@ final class MessagePayloadSerializer
     private function cutString(string $string): string
     {
         return mb_strlen($string) > self::MAX_LENGTH
-        ? mb_strcut($string, 0, self::MAX_LENGTH - 3) . '...'
-        : $string;
+            ? mb_strcut($string, 0, self::MAX_LENGTH - 3) . '...'
+            : $string;
     }
 }

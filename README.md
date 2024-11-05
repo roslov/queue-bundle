@@ -39,10 +39,8 @@ Then change the default settings by creating `config/packages/roslov_queue.yaml`
 roslov_queue:
   # Microservice name. This value will be used as a source of your published message
   service_name: my_service
-  # Set this value to `true` is you’re using the SSL connection to RabbitMQ (for example, in AWS)
+  # Set this value to `true` if you’re using the SSL connection to RabbitMQ (for example, in AWS)
   ssl_enabled: false
-  # Whether RabbitMQ bundle v1.x is used. It should be set to `false` for RabbitMQ bundles v2+
-  legacy_rabbitmq_bundle: false
   # PSR-3 logger service
   logger: logger
   # Entity manager service. If you do not produce messages, set it to `null` (`~`)
@@ -51,13 +49,14 @@ roslov_queue:
   event_processor:
     # Whether event processor is enabled. If disabled, no events will be sent or saved
     enabled: false
-    # Whether event processor uses instant delivery. If disabled, the event processor is used as transactional outbox
+    # Whether the event processor uses instant delivery. If disabled, the event processor is used as a transactional
+    # outbox
     instant_delivery: true
     # Delayed delivery subscriber. If disabled, the events will be stored but not sent (useful for tests)
     delayed_delivery_subscriber: true
   # RPC client
   rpc_client:
-    # Whether RPC client should be created
+    # Whether an RPC client should be created
     enabled: false
     # RabbitMQ connection
     connection: default
@@ -87,10 +86,10 @@ roslov_queue:
   exception_subscriber:
     # Whether exception subscriber should be enabled. If enabled, `exception_sender.exchange_options` is required
     enabled: false
-    # Exception validator callable. If you need to check whether exception subscriber should execute its code with
+    # Exception validator callable. If you need to check whether an exception subscriber should execute its code with
     # the given exception, add the callable service here. It must return `true` if the exception is OK and the
     # notification should be sent, or `false` if passed exception is not OK and should not be notified.
-    # Check the example of exception validator class below
+    # Check the example of the exception validator class below
     exception_validator: ~
   # Exception sender
   exception_sender:
@@ -119,8 +118,7 @@ old_sound_rabbit_mq:
       read_write_timeout: 60
       keepalive: false
       heartbeat: 30
-      # Use this parameter only if you need to use SSL connection to RabbitMQ.
-      # For RabbitMQ bundle v2.11.1 or older, use `roslov_queue.rabbitmq.connection_params_provider`
+      # Use this parameter only if you need to use SSL connection to RabbitMQ
       connection_parameters_provider: roslov_queue.rabbitmq.simple_ssl_context_provider
   # Producers (if used)
   producers:
@@ -244,7 +242,7 @@ final class ProducerFacade extends BaseProducerFacade
 ```
 
 The events are stored in DB and are sent on kernel terminate or after message consuming. So you have to create a DB
-table for events. Currently, only Doctrine with MySQL are supported:
+table for events. Currently, only Doctrine with MySQL is supported:
 
 ```sql
 CREATE TABLE event (
@@ -268,7 +266,7 @@ doctrine:
     mappings:
       RoslovQueue:
         is_bundle: false
-        type: annotation
+        type: attribute
         dir: '%kernel.project_dir%/vendor/roslov/queue-bundle/src/Entity'
         prefix: Roslov\QueueBundle\Entity
         alias: RoslovQueue
@@ -276,8 +274,9 @@ doctrine:
 
 Now you can send an event by `$producerFacade->sendUserCreatedEvent(123)`.
 
-The best way to use the event processor is use in inside a transaction to comply the Transactional Outbox pattern. So
-you have to call the producer facade somewhere in your code, and then flush all events at the end of the transaction:
+The best way to use the event processor is to use in inside a transaction to comply with the Transactional Outbox
+pattern.
+So you have to call the producer facade somewhere in your code and then flush all events at the end of the transaction:
 
 ```php
 $this->em->getConnection()->beginTransaction();

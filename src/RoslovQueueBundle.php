@@ -8,6 +8,8 @@ use Roslov\QueueBundle\DependencyInjection\RoslovQueueExtension;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+use function dirname;
+
 /**
  * Queue bundle.
  */
@@ -18,7 +20,7 @@ final class RoslovQueueBundle extends Bundle
      */
     public function getPath(): string
     {
-        return \dirname(__DIR__);
+        return dirname(__DIR__);
     }
 
     /**
