@@ -16,52 +16,48 @@ use Roslov\QueueBundle\Repository\EventRepository;
  * @ORM\Entity(repositoryClass=EventRepository::class)
  * @ORM\Table(name="event")
  */
+#[ORM\Entity(repositoryClass: EventRepository::class)]
+#[ORM\Table(name: 'event')]
 class Event
 {
     /**
      * @var int|null Id
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Id]
     private ?int $id = null;
 
     /**
      * @var float|null Unix timestamp with microseconds when the event was saved
-     *
-     * @ORM\Column(type="float")
      */
+    #[ORM\Column(type: 'float')]
     private ?float $microtime = null;
 
     /**
      * @var string|null Producer name
-     *
-     * @ORM\Column(type="string", length=64)
      */
+    #[ORM\Column(type: 'string', length: 64)]
     private ?string $producerName = null;
 
     /**
      * @var string|null Full message body
-     *
-     * @ORM\Column(type="string", length=4096)
      */
+    #[ORM\Column(type: 'string', length: 4096)]
     private ?string $body = null;
 
     /**
      * @var DateTimeInterface|null Creation timestamp
-     *
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="datetime", nullable=false)
      */
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    #[ORM\GeneratedValue]
     private ?DateTimeInterface $createdAt = null;
 
     /**
      * @var DateTimeInterface|null Update timestamp
-     *
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="datetime", nullable=false)
      */
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    #[ORM\GeneratedValue]
     private ?DateTimeInterface $updatedAt = null;
 
     public function getId(): ?int

@@ -10,8 +10,6 @@ use OldSound\RabbitMqBundle\Provider\ConnectionParametersProviderInterface;
  * Class SimpleSslContextProvider — changes RabbitMQ params dynamically.
  *
  * It adds SSL context when needed.
- *
- * If is used for RabbitMQ bundle v2.11.2+. For previous versions, use {@link ConnectionParametersProvider}.
  */
 final class SimpleSslContextProvider implements ConnectionParametersProviderInterface
 {

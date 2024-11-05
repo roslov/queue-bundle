@@ -38,8 +38,8 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder(self::NODE_NAME);
         $rootNode = method_exists(TreeBuilder::class, 'getRootNode')
-        ? $treeBuilder->getRootNode()
-        : $treeBuilder->root(self::NODE_NAME);
+            ? $treeBuilder->getRootNode()
+            : $treeBuilder->root(self::NODE_NAME);
         $rootNode
             ->children()
                 ->scalarNode('service_name')
@@ -51,11 +51,6 @@ final class Configuration implements ConfigurationInterface
                 ->scalarNode('ssl_enabled')
                     ->info('Whether SSL connection is enabled for RabbitMQ')
                     ->example('true')
-                    ->defaultFalse()
-                ->end()
-                ->booleanNode('legacy_rabbitmq_bundle')
-                    ->info('Whether RabbitMQ bundle v1.x is used')
-                    ->example('false')
                     ->defaultFalse()
                 ->end()
                 ->scalarNode('logger')

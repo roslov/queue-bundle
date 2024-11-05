@@ -26,11 +26,6 @@ services:
       - 'my_service'
   roslov_queue.id_generator:
     class: Roslov\QueueBundle\Generator\IdGenerator
-  roslov_queue.rabbitmq.connection_params_provider:
-    class: Roslov\QueueBundle\RabbitMQ\ConnectionParametersProvider
-    arguments:
-      - false
-      - false
   roslov_queue.rabbitmq.simple_ssl_context_provider:
     class: Roslov\QueueBundle\RabbitMQ\SimpleSslContextProvider
     arguments:
