@@ -123,6 +123,6 @@ final class ExceptionShortener
             return '';
         }
 
-        return mb_strcut($string, 0, mb_strlen($string) - self::CUT_LENGTH_STEP);
+        return mb_strcut($string, 0, mb_strlen($string) - $this->cutLengthStep);
     }
 }
