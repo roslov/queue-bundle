@@ -21,7 +21,8 @@ final class ProducerFacade extends BaseProducerFacade
         string $file,
         int $line,
         string $message,
-        string $trace
+        string $trace,
+        ?string $uri,
     ): void {
         $payload = new ExceptionThrown();
         $payload->setServiceName($serviceName);
@@ -31,6 +32,7 @@ final class ProducerFacade extends BaseProducerFacade
         $payload->setFile($file);
         $payload->setLine($line);
         $payload->setTrace($trace);
+        $payload->setUri($uri);
         $this->send('event_exception_thrown', $payload);
     }
 }

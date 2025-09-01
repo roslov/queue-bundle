@@ -54,6 +54,9 @@ final class ExceptionSender
      */
     public function sendExceptionThrownEvent(Throwable $exception): void
     {
+        // phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
+        $uri = $_SERVER['REQUEST_URI'] ?? null;
+        // phpcs:enable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
         $this->producerFacade->sendExceptionThrownEvent(
             $this->serviceName,
             gethostname() ?: null,
@@ -61,7 +64,8 @@ final class ExceptionSender
             $exception->getFile(),
             $exception->getLine(),
             $this->exceptionShortener->processMessage($exception->getMessage()),
-            $this->exceptionShortener->processTrace($exception->getTraceAsString())
+            $this->exceptionShortener->processTrace($exception->getTraceAsString()),
+            $uri ? $this->exceptionShortener->processMessage($uri) : null,
         );
     }
 }

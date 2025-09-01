@@ -45,6 +45,11 @@ final class ExceptionThrown
     private ?string $hostName = null;
 
     /**
+     * @var string|null Request URI (it’s a path with a query string in most cases, if available)
+     */
+    private ?string $uri = null;
+
+    /**
      * Returns exception class name.
      *
      * @return string Exception class name
@@ -182,5 +187,25 @@ final class ExceptionThrown
     public function setHostName(?string $hostName): void
     {
         $this->hostName = $hostName;
+    }
+
+    /**
+     * Returns the request URI.
+     *
+     * @return string|null URI
+     */
+    public function getUri(): ?string
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Sets the request URI.
+     *
+     * @param string|null $uri URI
+     */
+    public function setUri(?string $uri): void
+    {
+        $this->uri = $uri;
     }
 }
