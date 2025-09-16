@@ -16,6 +16,7 @@
         "doctrine/orm": "^2.11|^3.0",
         "php-amqplib/rabbitmq-bundle": "^2.12",
         "roslov/log-obfuscator": "^1.0",
+        "illuminate/support": "^9.0|^10.0|^11.0",
         "symfony/config": "^6.0|^7.0",
         "symfony/dependency-injection": "^6.0|^7.0",
         "symfony/framework-bundle": "^6.0|^7.0",
@@ -34,6 +35,13 @@
     "autoload-dev": {
         "psr-4": {
             "Roslov\\QueueBundle\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Roslov\\QueueBundle\\Laravel\\QueueServiceProvider"
+            ]
         }
     },
     "config": {

@@ -8,8 +8,9 @@ It is based on [RabbitMQ bundle](https://github.com/php-amqplib/RabbitMqBundle).
 
 ## Requirements
 
-- PHP 7.4 or higher
-- Symfony 3.4 or higher
+- PHP 8.1 or higher
+- Symfony 6 or higher
+- Laravel 9 or higher (optional)
 - Doctrine bundle (optional)
 - MySQL DB (optional)
 
@@ -470,6 +471,14 @@ If you want to send an exception event manually, use
 
 In case something happened, and you need to resend the same message again to the same queue, use
 `return ConsumerInterface::MSG_SINGLE_NACK_REQUEUE;` instead of `return ConsumerInterface::MSG_ACK;` in your consumer.
+
+
+### Laravel integration
+
+The package can also be used in Laravel applications. After installing it with composer,
+the service provider will be discovered automatically. You can access the
+`Roslov\QueueBundle\Producer\ProducerFacade` service via the Laravel container
+and use it the same way as in Symfony.
 
 
 ## Testing
