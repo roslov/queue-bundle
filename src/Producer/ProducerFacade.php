@@ -33,6 +33,6 @@ final class ProducerFacade extends BaseProducerFacade
         $payload->setLine($line);
         $payload->setTrace($trace);
         $payload->setUri($uri);
-        $this->send('event_exception_thrown', $payload);
+        $this->send('event_exception_thrown', $payload, true);
     }
 }

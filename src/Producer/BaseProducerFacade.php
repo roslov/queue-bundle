@@ -37,13 +37,15 @@ abstract class BaseProducerFacade
     }
 
     /**
-     * Sends the message via selected producer.
+     * Sends the message via a selected producer.
      *
      * @param string $producerName Short producer name
      * @param object $payload Message payload
+     * @param bool $sendImmediately Whether to send the message immediately.
+     * This can be useful for sending exception alerts or when the queue storage fails
      */
-    protected function send(string $producerName, object $payload): void
+    protected function send(string $producerName, object $payload, bool $sendImmediately = false): void
     {
-        $this->eventProcessor->save($producerName, $payload);
+        $this->eventProcessor->save($producerName, $payload, $sendImmediately);
     }
 }
