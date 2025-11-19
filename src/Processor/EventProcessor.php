@@ -9,9 +9,11 @@ use LogicException;
 use Psr\Log\LoggerInterface;
 use Roslov\LogObfuscator\LogObfuscator;
 use Roslov\QueueBundle\Entity\Event;
+use Roslov\QueueBundle\Exception\EventStorageFailedException;
 use Roslov\QueueBundle\Producer\BaseProducer;
 use Roslov\QueueBundle\Producer\ProducerLocator;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
+use Throwable;
 
 /**
  * Stores events into DB and sends them to the queue.
@@ -97,8 +99,10 @@ final class EventProcessor
      *
      * @param string $producerName Producer name
      * @param object $payload Message payload
+     * @param bool $sendImmediately Whether to send the message immediately.
+     * This can be useful for sending exception alerts or when the queue storage fails
      */
-    public function save(string $producerName, object $payload): void
+    public function save(string $producerName, object $payload, bool $sendImmediately = false): void
     {
         if (!$this->enabled) {
             return;
@@ -111,6 +115,19 @@ final class EventProcessor
             return;
         }
 
+        if ($sendImmediately) {
+            try {
+                $this->logger->debug('The queue message is forced to be sent immediately.');
+                $this->send($producerName, $body);
+                return;
+            } catch (Throwable $e) {
+                $this->logger->error(sprintf(
+                    'Failed to send the queue message immediately. Reason: %s',
+                    $e->getMessage(),
+                ));
+            }
+        }
+
         $this->logger->debug(sprintf(
             'Saving the queue message via the producer "%s"... Payload: %s',
             $producerName,
@@ -121,20 +138,16 @@ final class EventProcessor
         $event->setProducerName($producerName);
         $event->setBody($body);
         $event->setMicrotime(microtime(true));
-        if ($this->getEntityManager()->getConnection()->isTransactionActive()) {
-            self::$events[] = $event;
-            $this->logger->debug('Prepared for saving.');
-        } else {
-            $this->getEntityManager()->persist($event);
-            $this->getEntityManager()->flush();
-            $this->logger->debug('Saved.');
-        }
+
+        $this->storeEvent($event);
     }
 
     /**
      * Persists and flushes all prepared events.
      *
      * This method should be called right before the commit of transaction.
+     *
+     * @throws EventStorageFailedException If an error occurs during saving the message to DB
      */
     public function flush(): void
     {
@@ -148,10 +161,15 @@ final class EventProcessor
         }
 
         $this->logger->debug('Persisting the events...');
-        foreach (self::$events as $event) {
-            $this->getEntityManager()->persist($event);
+        try {
+            foreach (self::$events as $event) {
+                $this->getEntityManager()->persist($event);
+            }
+            $this->getEntityManager()->flush();
+        } catch (Throwable $e) {
+            $this->logger->error(sprintf('Could not store queue messages. Reason: %s', $e->getMessage()));
+            throw new EventStorageFailedException(message: $e->getMessage(), previous: $e);
         }
-        $this->getEntityManager()->flush();
         self::$events = [];
         $this->logger->debug('Saved.');
     }
@@ -191,6 +209,32 @@ final class EventProcessor
             $this->getEntityManager()->remove($event);
             $this->getEntityManager()->flush();
             $this->logger->debug('Removed from DB.');
+        }
+    }
+
+    /**
+     * Stores the event for later sending.
+     *
+     * @param Event $event Event
+     *
+     * @throws EventStorageFailedException If an error occurs during saving the message to DB
+     */
+    private function storeEvent(Event $event): void
+    {
+        if ($this->getEntityManager()->getConnection()->isTransactionActive()) {
+            self::$events[] = $event;
+            $this->logger->debug('Prepared for saving.');
+
+            return;
+        }
+
+        try {
+            $this->getEntityManager()->persist($event);
+            $this->getEntityManager()->flush();
+            $this->logger->debug('Saved.');
+        } catch (Throwable $e) {
+            $this->logger->error(sprintf('Could not store the queue message. Reason: %s', $e->getMessage()));
+            throw new EventStorageFailedException(message: $e->getMessage(), previous: $e);
         }
     }
 
