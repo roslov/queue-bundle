@@ -14,11 +14,14 @@
 *.bat  text
 *.sql  text
 *.yml  text
+*.yaml text
 
 # Ensure those won't be messed up with
 *.png  binary
 *.jpg  binary
+*.jpeg binary
 *.gif  binary
+*.webp binary
 *.ttf  binary
 
 # Ignore some meta files when creating an archive of this repository
@@ -33,4 +36,4 @@
 
 # Avoid merge conflicts in CHANGELOG
 # https://about.gitlab.com/2015/02/10/gitlab-reduced-merge-conflicts-by-90-percent-with-changelog-placeholders/
-/CHANGELOG.md		    merge=union
+/CHANGELOG.md           merge=union
