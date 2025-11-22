@@ -47,7 +47,7 @@ roslov_queue:
   entity_manager: doctrine.orm.default_entity_manager
   # Event processor
   event_processor:
-    # Whether event processor is enabled. If disabled, no events will be sent or saved
+    # Whether the event processor is enabled. If disabled, no events will be sent or saved
     enabled: false
     # Whether the event processor uses instant delivery. If disabled, the event processor is used as a transactional
     # outbox
@@ -104,7 +104,7 @@ roslov_queue:
 ### RabbitMQ configuration
 
 This package also installs [RabbitMQ bundle](https://github.com/php-amqplib/RabbitMqBundle). So first, you need to
-configure RabbitMQ bundle. Follow its documentation. For example:
+configure the RabbitMQ bundle. Follow its documentation. For example:
 
 ```yaml
 # config/packages/old_sound_rabbit_mq.yaml
@@ -173,7 +173,7 @@ final class UserCreatedConsumer implements ConsumerInterface
         // Refresh entity manager if used (`$this->em->clear()`)...
 
         $dto = $this->serializer->deserialize($msg->getBody());
-        // `$dto` will be automatically detected based on payload type.
+        // `$dto` will be automatically detected based on a payload type.
 
         // Process DTO...
 
@@ -241,7 +241,7 @@ final class ProducerFacade extends BaseProducerFacade
 }
 ```
 
-The events are stored in DB and are sent on kernel terminate or after message consuming. So you have to create a DB
+The events are stored in DB and are sent on kernel termination or after message consuming. So you have to create a DB
 table for events. Currently, only Doctrine with MySQL is supported:
 
 ```sql
@@ -288,7 +288,7 @@ try {
     // Your code...
     $this->eventProcessor->flush(); // All events are being stored in DB.
                                     // This should be done right before committing. Otherwise, you may lose your events.
-                                    // All events will be sent to RabbitMQ on kernel terminate or on message consume.
+                                    // All events will be sent to RabbitMQ on kernel termination or on message consume.
     $this->em->getConnection()->commit();
 } catch (Throwable $e) {
     $this->em->getConnection()->rollBack();
@@ -296,7 +296,7 @@ try {
 }
 ```
 
-Do not forget to enable the event processor in `roslov_queue.event_processor.enabled` if you produce messages.
+Enable the event processor in `roslov_queue.event_processor.enabled` if you produce messages.
 
 Note that by default, the transactional outbox support is disabled. To enable it, set
 `roslov_queue.event_processor.instant_delivery` to `false`.
@@ -307,7 +307,7 @@ In some microservices, you do not need to use transactional outbox, so events ca
 behavior.
 
 For automation tests, you can disable `roslov_queue.event_processor.delayed_delivery_subscriber`. In this case, the
-events will be stored in DB but not sent. So you can test your DB whether events where created. Note that this will not
+events will be stored in DB but not sent. So you can test your DB whether events were created. Note that this will not
 work if instant delivery is enabled — the events will be sent instantly.
 
 
@@ -448,7 +448,7 @@ Example of exception validator class, that can be passed to the `roslov_queue.ex
 final class ExceptionValidator
 {
     /**
-     * Returns `true` if notification about exception SHOULD BE sent.
+     * Returns `true` if notification about an exception SHOULD BE sent.
      *
      * In this case, we notify about all exceptions except `UserNotFoundException`.
      *

@@ -68,6 +68,7 @@ class Event
     public function setId(?int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -79,6 +80,7 @@ class Event
     public function setMicrotime(?float $microtime): self
     {
         $this->microtime = $microtime;
+
         return $this;
     }
 
@@ -90,6 +92,7 @@ class Event
     public function setProducerName(?string $producerName): self
     {
         $this->producerName = $producerName;
+
         return $this;
     }
 
@@ -101,6 +104,7 @@ class Event
     public function setBody(?string $body): self
     {
         $this->body = $body;
+
         return $this;
     }
 

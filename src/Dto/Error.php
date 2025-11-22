@@ -10,7 +10,7 @@ namespace Roslov\QueueBundle\Dto;
 final class Error
 {
     /**
-     * @var string Payload type (message sub-type)
+     * @var string Payload type (message subtype)
      */
     private string $type;
 

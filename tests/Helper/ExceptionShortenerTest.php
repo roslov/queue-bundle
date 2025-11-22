@@ -43,7 +43,7 @@ final class ExceptionShortenerTest extends TestCase
     }
 
     /**
-     * Returns data for exception trace processing test.
+     * Returns data for the exception trace processing test.
      *
      * @return string[][] Initial and corrected exception trace strings
      */

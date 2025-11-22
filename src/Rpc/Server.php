@@ -39,8 +39,8 @@ final class Server
     private array $handlers;
 
     /**
-     * @var object|null The callable object that has to be run before message processing (for example, DB connection
-     * refresh)
+     * @var object|null The callable object that has to be run before message processing
+     * (for example, DB connection refresh)
      */
     private ?object $setup = null;
 
@@ -51,15 +51,15 @@ final class Server
      * @param EntityManagerInterface|null $em Entity manager
      * @param bool $enabled Whether RPC server is enabled
      * @param array<string, HandlerInterface> $handlers Handlers (command class name => handler service)
-     * @param object|null $setup The callable object that has to be run before message processing (for example, DB
-     * connection refresh)
+     * @param object|null $setup The callable object that has to be run before message processing
+     * (for example, DB connection refresh)
      */
     public function __construct(
         MessagePayloadSerializer $serializer,
         ?EntityManagerInterface $em,
         bool $enabled,
         array $handlers,
-        ?object $setup
+        ?object $setup,
     ) {
         $this->em = $em;
         $this->serializer = $serializer;
@@ -72,6 +72,7 @@ final class Server
      * Processes the message and returns the serialized result.
      *
      * @param AMQPMessage $msg Message
+     *
      * @return string Serialized response
      */
     public function execute(AMQPMessage $msg): string
@@ -83,6 +84,7 @@ final class Server
      * Processes the message and returns the serialized result.
      *
      * @param AMQPMessage $msg Message
+     *
      * @return string Serialized response
      */
     private function processMessage(AMQPMessage $msg): string
@@ -96,6 +98,7 @@ final class Server
         $this->refreshEntityManager();
         $command = $this->serializer->deserialize($msg->getBody());
         $result = $this->handle($command);
+
         return $this->serializer->serialize($result);
     }
 
@@ -103,6 +106,7 @@ final class Server
      * Processes the command and returns the result.
      *
      * @param object $command Command
+     *
      * @return object Result of the command execution
      */
     private function handle(object $command): object
@@ -114,11 +118,13 @@ final class Server
                 throw new InvalidHandlerRpcServerException(sprintf(
                     'Handler "%s" should implement "%s".',
                     $class,
-                    HandlerInterface::class
+                    HandlerInterface::class,
                 ));
             }
+
             return $handler->handle($command);
         }
+
         throw new UnsupportedCommandRpcServerException(sprintf('Command "%s" is not supported.', $class));
     }
 

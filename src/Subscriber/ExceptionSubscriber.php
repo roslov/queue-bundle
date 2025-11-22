@@ -45,7 +45,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
     public function __construct(
         bool $enabled,
         ?object $exceptionValidator,
-        ExceptionSender $exceptionSender
+        ExceptionSender $exceptionSender,
     ) {
         $this->enabled = $enabled;
         $this->exceptionValidator = $exceptionValidator;
@@ -112,6 +112,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
      * Gets the exception from different possible event instances.
      *
      * @param object $event Event
+     *
      * @return Throwable Exception
      */
     private function getException(object $event): Throwable
@@ -122,10 +123,11 @@ final class ExceptionSubscriber implements EventSubscriberInterface
         if ($event instanceof ExceptionEvent) {
             return $event->getThrowable();
         }
+
         throw new InvalidArgumentException(sprintf(
             'Invalid event object. Allowed: %s or %s',
             GetResponseForExceptionEvent::class,
-            ExceptionEvent::class
+            ExceptionEvent::class,
         ));
     }
 }

@@ -40,7 +40,7 @@ final class ExceptionSender
     public function __construct(
         BaseProducerFacade $producerFacade,
         ExceptionShortener $exceptionShortener,
-        string $serviceName
+        string $serviceName,
     ) {
         $this->producerFacade = $producerFacade;
         $this->exceptionShortener = $exceptionShortener;

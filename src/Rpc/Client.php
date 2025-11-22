@@ -42,7 +42,7 @@ final class Client implements ClientInterface
     public function __construct(
         ?RpcClient $client,
         MessagePayloadSerializer $serializer,
-        IdGeneratorInterface $idGenerator
+        IdGeneratorInterface $idGenerator,
     ) {
         $this->client = $client;
         $this->serializer = $serializer;
@@ -67,9 +67,10 @@ final class Client implements ClientInterface
         }
         if (!isset($replies[$requestId])) {
             throw new RequestIdNotFoundRpcClientException(
-                sprintf('RPC call response does not contain request id "%s".', $requestId)
+                sprintf('RPC call response does not contain request id "%s".', $requestId),
             );
         }
+
         return $this->serializer->deserialize($replies[$requestId]);
     }
 }

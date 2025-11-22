@@ -23,6 +23,7 @@ interface ClientInterface
      * @param object $command Command DTO
      * @param string $exchangeName Exchange name
      * @param int $timeout Request expiration time (in seconds)
+     *
      * @return object Response
      *
      * @throws TimeoutRpcClientException On timeout
