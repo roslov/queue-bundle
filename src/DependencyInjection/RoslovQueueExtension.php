@@ -49,7 +49,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
             ->replaceArgument(3, $this->getHandlerReferences($config['rpc_server']['handlers'] ?? []))
             ->replaceArgument(
                 4,
-                $config['rpc_server']['setup'] ? new Reference($config['rpc_server']['setup']) : null
+                $config['rpc_server']['setup'] ? new Reference($config['rpc_server']['setup']) : null,
             );
         $container->getDefinition('roslov_queue.event_processor')
             ->replaceArgument(0, $config['event_processor']['enabled'])
@@ -62,7 +62,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
                 1,
                 $config['exception_subscriber']['exception_validator']
                     ? new Reference($config['exception_subscriber']['exception_validator'])
-                    : null
+                    : null,
             );
         $container->getDefinition('roslov_queue.exception_sender')
             ->replaceArgument(2, $config['service_name']);
@@ -134,6 +134,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
      * Returns references to handlers.
      *
      * @param array<string, string> $handlers Handlers (command class name => handler class name)
+     *
      * @return array<string, Reference> Handler references (command class name => handler reference)
      */
     private function getHandlerReferences(array $handlers): array
@@ -142,6 +143,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
         foreach ($handlers as $commandClass => $handlerClass) {
             $refs[$commandClass] = new Reference($handlerClass);
         }
+
         return $refs;
     }
 
@@ -149,6 +151,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
      * Generate the queue name for the RPC server.
      *
      * @param array<string, string> $serverConfig RPC server config
+     *
      * @return string Queue name
      */
     private function getServerQueueName(array $serverConfig): string

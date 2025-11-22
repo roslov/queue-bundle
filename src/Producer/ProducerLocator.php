@@ -31,11 +31,13 @@ final class ProducerLocator implements ServiceSubscriberInterface
      * Returns the producer by name.
      *
      * @param string $name Producer name
+     *
      * @return BaseProducer Producer
      */
     public function get(string $name): BaseProducer
     {
         $producerServiceName = "old_sound_rabbit_mq.{$name}_producer";
+
         return $this->locator->get($producerServiceName);
     }
 

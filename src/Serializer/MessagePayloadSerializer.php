@@ -53,23 +53,26 @@ final class MessagePayloadSerializer
     /**
      * Serializes the message payload to JSON.
      *
-     * The resulting string will contain the message data like message type, source, etc.
+     * The resulting string will contain the message data like a message type, source, etc.
      *
      * @param object $payload Message Payload
+     *
      * @return string Serialized message
      */
     public function serialize(object $payload): string
     {
         $message = $this->messageFactory->createMessage($payload);
+
         return $this->getSerializer()->serialize($message, 'json');
     }
 
     /**
      * Deserializes the JSON string to the message object with payload.
      *
-     * The input JSON should contain the message data like message type, source, etc.
+     * The input JSON should contain the message data like a message type, source, etc.
      *
      * @param string $json Serialized JSON string
+     *
      * @return object Message payload
      *
      * @throws DeserializationException If string cannot be deserialized
@@ -82,11 +85,12 @@ final class MessagePayloadSerializer
             $payload = $this->getSerializer()->deserialize(
                 json_encode($message['data'], JSON_THROW_ON_ERROR),
                 $payloadClass,
-                'json'
+                'json',
             );
         } catch (Throwable $e) {
             throw new DeserializationException('Deserialization failed for JSON: ' . $this->cutString($json), 0, $e);
         }
+
         return $payload;
     }
 
@@ -104,6 +108,7 @@ final class MessagePayloadSerializer
      * Shortens the string and adds `...` at the end.
      *
      * @param string $string String
+     *
      * @return string Processed string
      */
     private function cutString(string $string): string

@@ -37,6 +37,7 @@ final class SimpleSslContextProvider implements ConnectionParametersProviderInte
             'ssl_on' => true,
             'ssl_verify' => false,
         ];
+
         return $this->sslEnabled ? ['ssl_context' => $sslContext] : [];
     }
 }

@@ -56,7 +56,7 @@ final class ExceptionShortener
     public function __construct(
         int $maxMessageSize = self::MAX_MESSAGE_SIZE,
         int $maxTraceSize = self::MAX_TRACE_SIZE,
-        int $cutLengthStep = self::CUT_LENGTH_STEP
+        int $cutLengthStep = self::CUT_LENGTH_STEP,
     ) {
         $this->maxTraceSize = $maxTraceSize;
         $this->maxMessageSize = $maxMessageSize;
@@ -67,6 +67,7 @@ final class ExceptionShortener
      * Shortens the trace to the $this->maxTraceSize value and replaces the last row with the `...`.
      *
      * @param string $traceString Exception trace string
+     *
      * @return string Processed exception trace string
      */
     public function processTrace(string $traceString): string
@@ -95,6 +96,7 @@ final class ExceptionShortener
      * Shortens the message to the $this->maxMessageSize value and adds `...` at the end.
      *
      * @param string $message Exception message string
+     *
      * @return string Processed exception message string
      */
     public function processMessage(string $message): string
@@ -115,6 +117,7 @@ final class ExceptionShortener
      * Cuts the characters from the end of the string.
      *
      * @param string $string String to be cut
+     *
      * @return string Cut string
      */
     private function cutStringByStep(string $string): string

@@ -21,12 +21,12 @@ use Throwable;
 final class EventProcessor
 {
     /**
-     * @var bool Whether event processor is enabled. If disabled, no events will be sent or saved
+     * @var bool Whether the event processor is enabled. If disabled, no events will be sent or saved
      */
     private bool $enabled;
 
     /**
-     * @var bool Whether event processor uses instant delivery. If disabled, the event processor is used as
+     * @var bool Whether the event processor uses instant delivery. If disabled, the event processor is used as
      * transactional outbox
      */
     private bool $instantDelivery;
@@ -64,9 +64,9 @@ final class EventProcessor
     /**
      * Constructor.
      *
-     * @param bool $enabled Whether event processor is enabled. If disabled, no events will be sent or saved
-     * @param bool $instantDelivery Whether event processor uses instant delivery. If disabled, the event processor is
-     * used as transactional outbox
+     * @param bool $enabled Whether the event processor is enabled. If disabled, no events will be sent or saved
+     * @param bool $instantDelivery Whether the event processor uses instant delivery.
+     * If disabled, the event processor is used as a transactional outbox
      * @param ProducerLocator $producerLocator Producer locator
      * @param EntityManagerInterface|null $em Entity manager
      * @param LoggerInterface $logger Logger
@@ -80,7 +80,7 @@ final class EventProcessor
         ?EntityManagerInterface $em,
         LoggerInterface $logger,
         MessagePayloadSerializer $serializer,
-        LogObfuscator $obfuscator
+        LogObfuscator $obfuscator,
     ) {
         $this->enabled = $enabled;
         $this->instantDelivery = $instantDelivery;
@@ -112,6 +112,7 @@ final class EventProcessor
 
         if ($this->instantDelivery) {
             $this->send($producerName, $body);
+
             return;
         }
 
@@ -119,6 +120,7 @@ final class EventProcessor
             try {
                 $this->logger->debug('The queue message is forced to be sent immediately.');
                 $this->send($producerName, $body);
+
                 return;
             } catch (Throwable $e) {
                 $this->logger->error(sprintf(
@@ -131,7 +133,7 @@ final class EventProcessor
         $this->logger->debug(sprintf(
             'Saving the queue message via the producer "%s"... Payload: %s',
             $producerName,
-            $body
+            $body,
         ));
 
         $event = new Event();
@@ -157,6 +159,7 @@ final class EventProcessor
 
         if (!self::$events) {
             $this->logger->debug('There is no event to persist.');
+
             return;
         }
 
@@ -168,6 +171,7 @@ final class EventProcessor
             $this->getEntityManager()->flush();
         } catch (Throwable $e) {
             $this->logger->error(sprintf('Could not store queue messages. Reason: %s', $e->getMessage()));
+
             throw new EventStorageFailedException(message: $e->getMessage(), previous: $e);
         }
         self::$events = [];
@@ -177,13 +181,13 @@ final class EventProcessor
     /**
      * Sends all previously stored events.
      *
-     * This method should be called on kernel terminate or on similar cases, so all events are sent after common program
-     * execution.
+     * This method should be called on kernel termination or in similar cases, so all events are sent after common
+     * program execution.
      *
      * Note that this method clears entity manager, so all previously persisted but not flushed queries will be lost.
-     * This is needed in order to avoid saving entities that the main program was not planning to flush.
+     * This is needed to avoid saving entities that the main program was not planning to flush.
      *
-     * @param bool $dryRun Dry run — if enabled then events will be kept in DB and not sent. It is useful for tests
+     * @param bool $dryRun Dry run — if enabled, then events will be kept in DB and not sent. It is useful for tests
      */
     public function sendAll(bool $dryRun = false): void
     {
@@ -193,6 +197,7 @@ final class EventProcessor
 
         if ($this->instantDelivery) {
             $this->logger->info('Instant delivery: sending skipped because events are sent in real-time.');
+
             return;
         }
 
@@ -201,6 +206,7 @@ final class EventProcessor
 
         if ($dryRun) {
             $this->logger->info('Dry run: sending skipped.');
+
             return;
         }
 
@@ -234,6 +240,7 @@ final class EventProcessor
             $this->logger->debug('Saved.');
         } catch (Throwable $e) {
             $this->logger->error(sprintf('Could not store the queue message. Reason: %s', $e->getMessage()));
+
             throw new EventStorageFailedException(message: $e->getMessage(), previous: $e);
         }
     }
@@ -242,6 +249,7 @@ final class EventProcessor
      * Returns the producer.
      *
      * @param string $producerName Producer name
+     *
      * @return BaseProducer Producer
      */
     private function getProducer(string $producerName): BaseProducer
@@ -258,9 +266,10 @@ final class EventProcessor
     {
         if ($this->em === null) {
             throw new LogicException(
-                'You cannot use the event processor with delayed delivery without providing an entity manager.'
+                'You cannot use the event processor with delayed delivery without providing an entity manager.',
             );
         }
+
         return $this->em;
     }
 
@@ -275,7 +284,7 @@ final class EventProcessor
         $this->logger->info(sprintf(
             'Sending the queue message via the producer "%s"... Payload: %s',
             $producerName,
-            $this->obfuscator->obfuscate($body)
+            $this->obfuscator->obfuscate($body),
         ));
         $this->getProducer($producerName)->send($body);
         $this->logger->info('Sent.');

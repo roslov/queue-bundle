@@ -80,7 +80,7 @@ final class ExceptionThrown
     }
 
     /**
-     * Sets file name with the error.
+     * Sets the file name with the error.
      *
      * @param string $file File name with the error
      */
@@ -90,7 +90,7 @@ final class ExceptionThrown
     }
 
     /**
-     * Returns line of code with the error.
+     * Returns the line of code with the error.
      *
      * @return int Line of code with the error
      */
@@ -100,7 +100,7 @@ final class ExceptionThrown
     }
 
     /**
-     * Sets line of code with the error.
+     * Sets the line of code with the error.
      *
      * @param int $line Line of code with the error
      */

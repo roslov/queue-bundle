@@ -35,6 +35,7 @@ final class PayloadFactory
      * Creates the payload.
      *
      * @param string $messageType Message type
+     *
      * @return object Payload
      *
      * @throws InvalidMessageTypeException If the message type is not supported
@@ -42,6 +43,7 @@ final class PayloadFactory
     public function createPayload(string $messageType): object
     {
         $class = $this->getPayloadClassName($messageType);
+
         return new $class();
     }
 
@@ -49,6 +51,7 @@ final class PayloadFactory
      * Returns the payload class name.
      *
      * @param string $messageType Message type
+     *
      * @return string Payload class name
      *
      * @throws InvalidMessageTypeException If the message type is not supported
@@ -59,6 +62,7 @@ final class PayloadFactory
         if ($class === null) {
             throw new InvalidMessageTypeException(sprintf('Message type "%s" is not supported.', $messageType));
         }
+
         return $class;
     }
 
@@ -66,6 +70,7 @@ final class PayloadFactory
      * Returns the message type.
      *
      * @param object $payload Payload
+     *
      * @return string Payload class name
      *
      * @throws InvalidPayloadClassException If the payload class is not supported
@@ -77,6 +82,7 @@ final class PayloadFactory
         if ($type === false) {
             throw new InvalidPayloadClassException(sprintf('Payload class "%s" is not supported.', $class));
         }
+
         return $type;
     }
 }
