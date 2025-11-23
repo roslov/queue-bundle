@@ -8,18 +8,10 @@ It is based on [RabbitMQ bundle](https://github.com/php-amqplib/RabbitMqBundle).
 
 ## Requirements
 
-- PHP 7.4 or higher
-- Symfony 3.4 or higher
+- PHP 8.1 or higher
+- Symfony 6.0 or higher
 - Doctrine bundle (optional)
 - MySQL DB (optional)
-
-
-## TODO
-
-- [ ] RPC client: Allow multiple request calls
-- [ ] Doctrine: Add automatic migrations
-- [ ] Doctrine: Add automatic entity setup
-- [ ] Tests: Add tests
 
 
 ## Installation and usage
