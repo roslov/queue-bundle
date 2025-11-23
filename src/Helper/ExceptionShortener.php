@@ -95,6 +95,8 @@ final class ExceptionShortener
     /**
      * Shortens the message to the $this->maxMessageSize value and adds `...` at the end.
      *
+     * The maximum message size is compared with the JSON-encoded string length to ensure accurate trimming.
+     *
      * @param string $message Exception message string
      *
      * @return string Processed exception message string
@@ -106,7 +108,9 @@ final class ExceptionShortener
         }
 
         $message = mb_strcut($message, 0, $this->maxMessageSize);
-        while (mb_strlen(json_encode($message)) > $this->maxMessageSize && $message !== '') {
+        $capSize = strlen(self::TRIMMED_STRING_CAP);
+        // This cycle is needed for faster trimming of Unicode messages
+        while (mb_strlen(json_encode($message)) > $this->maxMessageSize - $capSize && $message !== '') {
             $message = $this->cutStringByStep($message);
         }
 
@@ -126,6 +130,6 @@ final class ExceptionShortener
             return '';
         }
 
-        return mb_strcut($string, 0, mb_strlen($string) - self::CUT_LENGTH_STEP);
+        return mb_strcut($string, 0, mb_strlen($string) - $this->cutLengthStep);
     }
 }

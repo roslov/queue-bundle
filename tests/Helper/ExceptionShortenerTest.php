@@ -37,7 +37,7 @@ final class ExceptionShortenerTest extends TestCase
      */
     public function testCorrectMessageShortening(string $messageString, string $expectedResult): void
     {
-        $traceShortener = new ExceptionShortener(20, 0, 3);
+        $traceShortener = new ExceptionShortener(40, 0, 2);
         $shortenedMessage = $traceShortener->processMessage($messageString);
         $this->assertEquals($expectedResult, $shortenedMessage);
     }
@@ -85,23 +85,35 @@ final class ExceptionShortenerTest extends TestCase
     public function messageProvider(): array
     {
         return [
-            'message is too large' => [
-                'cURL error 28: Operation timed outcURL error 28: Operation timed out',
-                'cURL error...',
+            'encoded message is too large' => [
+                // JSON encoded (83 chars):
+                // "The very long one-byte message that exceeds the maximum allowed size for messages"
+                'The very long one-byte message that exceeds the maximum allowed size for messages',
+                'The very long one-byte message tha...',
             ],
-            'message is less than max size' => [
-                'cURL',
-                'cURL',
+            'encoded message is less than max size' => [
+                // JSON encoded (19 chars): "The small message"
+                'The small message',
+                'The small message',
             ],
-            'message is equal to max size' => [
-                'cURL e',
-                'cURL e',
+            'encoded message is equal to max size' => [
+                // JSON encoded (40 chars): "The one-byte message that fits exactly"
+                'The one-byte message that fits exactly',
+                'The one-byte message that fits exactly',
             ],
             'message is empty' => [
                 '',
                 '',
             ],
-            'multi-byte symbols are trimmed correctly' => [
+            '2-byte symbols are trimmed correctly' => [
+                // JSON encoded (50 chars):
+                // "\u263a\u263a\u263a\u263a\u263a\u263a\u263a\u263a"
+                '☺☺☺☺☺☺☺☺',
+                '☺☺...',
+            ],
+            '4-byte symbols are trimmed correctly' => [
+                // JSON encoded (98 chars):
+                // "\ud83d\ude01\ud83d\ude01\ud83d\ude01\ud83d\ude01\ud83d\ude01\ud83d\ude01\ud83d\ude01\ud83d\ude01"
                 '😁😁😁😁😁😁😁😁',
                 '😁...',
             ],
