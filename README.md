@@ -24,6 +24,13 @@ The package could be installed with composer:
 composer require roslov/queue-bundle
 ```
 
+For Laravel applications register `Roslov\\QueueBundle\\Laravel\\QueueServiceProvider`
+in `config/app.php` and publish the configuration:
+
+```shell
+php artisan vendor:publish --provider="Roslov\\QueueBundle\\Laravel\\QueueServiceProvider"
+```
+
 Then change the default settings by creating `config/packages/roslov_queue.yaml` with the content below.
 
 ```yaml
