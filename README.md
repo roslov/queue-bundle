@@ -1,6 +1,11 @@
 Queue Bundle
 ============
 
+[![Latest Stable Version](https://poser.pugx.org/roslov/queue-bundle/v)](https://packagist.org/packages/roslov/queue-bundle)
+[![Total Downloads](https://poser.pugx.org/roslov/queue-bundle/downloads)](https://packagist.org/packages/roslov/queue-bundle)
+[![License](https://poser.pugx.org/roslov/queue-bundle/license)](https://packagist.org/packages/roslov/queue-bundle)
+[![PHP Version Require](https://poser.pugx.org/roslov/queue-bundle/require/php)](https://packagist.org/packages/roslov/queue-bundle)
+
 This package provides the classes needed to work with RabbitMQ.
 
 It is based on [RabbitMQ bundle](https://github.com/php-amqplib/RabbitMqBundle).
