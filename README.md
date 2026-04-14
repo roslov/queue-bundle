@@ -141,6 +141,41 @@ old_sound_rabbit_mq:
 ```
 
 
+### Message structure and DTOs
+
+The bundle uses DTOs (Data Transfer Objects) to pass data between microservices. When you send a DTO, it is wrapped in a `Roslov\QueueBundle\Dto\Message` object and serialized to JSON.
+
+The serialized message has the following JSON structure:
+
+```json
+{
+    "type": "UserUpdated",
+    "source": "my_service",
+    "correlationId": "cid12345",
+    "data": {
+        "id": 123,
+        "name": "John Doe"
+    }
+}
+```
+
+- `type`: The message type. It is used to find the corresponding DTO class for deserialization.
+- `source`: The name of the service that sent the message (defined in `roslov_queue.service_name`).
+- `correlationId`: A unique ID for message tracking (currently not implemented, but present for future use).
+- `data`: The actual payload — your DTO serialized to JSON.
+
+To let the bundle know which DTO class to use for a specific message type, you must add it to the `roslov_queue.payload_mapping` configuration:
+
+```yaml
+roslov_queue:
+  payload_mapping:
+    # Message type: DTO class name
+    UserUpdated: App\Dto\Queue\UserUpdated
+```
+
+The message type (the key in the mapping) will be used as the `type` field in the serialized JSON.
+
+
 ### Consumers and producers
 
 Create DTOs that will be used in consumers and producers, and add them to `roslov_queue.payload_mapping` (see examples).
