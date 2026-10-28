@@ -23,7 +23,7 @@ use function sprintf;
  */
 final class ExceptionSubscriber implements EventSubscriberInterface
 {
-    private const HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500;
+    private const int HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500;
 
     /**
      * @var bool Whether exception subscriber is enabled

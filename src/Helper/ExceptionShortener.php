@@ -22,22 +22,22 @@ final class ExceptionShortener
     /**
      * Maximum exception message string size in bytes
      */
-    private const MAX_MESSAGE_SIZE = 400;
+    private const int MAX_MESSAGE_SIZE = 400;
 
     /**
      * Maximum exception trace string size in bytes
      */
-    private const MAX_TRACE_SIZE = 2700;
+    private const int MAX_TRACE_SIZE = 2700;
 
     /**
      * The length to cut on each step
      */
-    private const CUT_LENGTH_STEP = 10;
+    private const int CUT_LENGTH_STEP = 10;
 
     /**
      * The string that will be concatenated at the end of every trimmed string
      */
-    private const TRIMMED_STRING_CAP = '...';
+    private const string TRIMMED_STRING_CAP = '...';
 
     /**
      * @var int Maximum exception message string size in bytes

@@ -27,7 +27,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
     /**
      * Alias
      */
-    private const ALIAS = 'roslov_queue';
+    private const string ALIAS = 'roslov_queue';
 
     /**
      * @inheritDoc

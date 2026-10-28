@@ -15,7 +15,7 @@ interface ClientInterface
     /**
      * Request expiration time (in seconds)
      */
-    public const TIMEOUT = 15;
+    public const int TIMEOUT = 15;
 
     /**
      * Makes remote procedure call.

@@ -13,7 +13,7 @@ It is based on [RabbitMQ bundle](https://github.com/php-amqplib/RabbitMqBundle).
 
 ## Requirements
 
-- PHP 8.1 or higher
+- PHP 8.3 or higher
 - Symfony 6.0 or higher
 - Doctrine bundle (optional)
 - MySQL DB (optional)
