@@ -22,7 +22,7 @@ final class PayloadMappingPass implements CompilerPassInterface
     /**
      * Parameter name for explicitly configured payload types
      */
-    public const CONFIGURED_PAYLOAD_TYPES_PARAM = 'roslov_queue.configured_payload_types';
+    public const string CONFIGURED_PAYLOAD_TYPES_PARAM = 'roslov_queue.configured_payload_types';
 
     /**
      * @inheritDoc

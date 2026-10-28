@@ -33,7 +33,7 @@ final class MessagePayloadSerializer
     /**
      * Maximum length of a string for an exception message
      */
-    private const MAX_LENGTH = 1000;
+    private const int MAX_LENGTH = 1000;
 
     /**
      * @var PayloadFactory Payload factory

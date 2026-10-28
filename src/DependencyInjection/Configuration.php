@@ -22,7 +22,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * Default message type to payload mapping
      */
-    public const DEFAULT_PAYLOADS = [
+    public const array DEFAULT_PAYLOADS = [
         'Error' => Error::class,
         'Trigger' => Trigger::class,
         'Response.Empty' => EmptyResponse::class,
@@ -32,7 +32,7 @@ final class Configuration implements ConfigurationInterface
     /**
      * Tree main node name
      */
-    private const NODE_NAME = 'roslov_queue';
+    private const string NODE_NAME = 'roslov_queue';
 
     /**
      * @inheritDoc
