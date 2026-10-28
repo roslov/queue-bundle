@@ -19,6 +19,7 @@ services:
       - Error: Roslov\QueueBundle\Dto\Error
         Trigger: Roslov\QueueBundle\Dto\Trigger
         Response.Empty: Roslov\QueueBundle\Dto\EmptyResponse
+        Exception.Thrown: Roslov\QueueBundle\Dto\ExceptionThrown
   roslov_queue.message_factory:
     class: Roslov\QueueBundle\Factory\MessageFactory
     arguments:

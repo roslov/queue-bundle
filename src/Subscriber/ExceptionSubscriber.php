@@ -15,6 +15,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
 
+use function is_callable;
+use function sprintf;
+
 /**
  * Sends an event automatically on exception.
  */

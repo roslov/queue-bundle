@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Roslov\QueueBundle\Dto;
 
+use Roslov\QueueBundle\Attribute\AsQueuePayload;
+
 /**
  * Event DTO: Exception was thrown.
  */
+#[AsQueuePayload('Exception.Thrown')]
 final class ExceptionThrown
 {
     /**

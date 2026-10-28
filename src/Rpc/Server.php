@@ -13,6 +13,10 @@ use Roslov\QueueBundle\Exception\InvalidHandlerRpcServerException;
 use Roslov\QueueBundle\Exception\UnsupportedCommandRpcServerException;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
 
+use function get_class;
+use function is_callable;
+use function sprintf;
+
 /**
  * RPC server.
  */

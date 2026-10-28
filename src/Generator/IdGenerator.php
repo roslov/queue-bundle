@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Roslov\QueueBundle\Generator;
 
+use function md5;
+use function uniqid;
+
 /**
  * Generates request ids for RPC requests.
  */

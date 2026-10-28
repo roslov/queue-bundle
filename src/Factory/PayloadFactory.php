@@ -9,6 +9,10 @@ namespace Roslov\QueueBundle\Factory;
 use Roslov\QueueBundle\Exception\InvalidMessageTypeException;
 use Roslov\QueueBundle\Exception\InvalidPayloadClassException;
 
+use function array_search;
+use function get_class;
+use function sprintf;
+
 /**
  * Message payload factory.
  *
