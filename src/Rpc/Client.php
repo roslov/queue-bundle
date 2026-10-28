@@ -11,11 +11,14 @@ use Roslov\QueueBundle\Exception\RequestIdNotFoundRpcClientException;
 use Roslov\QueueBundle\Exception\TimeoutRpcClientException;
 use Roslov\QueueBundle\Generator\IdGeneratorInterface;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
+use Roslov\QueueBundle\Tests\Rpc\ClientTest;
 
 use function sprintf;
 
 /**
  * RPC client.
+ *
+ * @see ClientTest
  */
 final readonly class Client implements ClientInterface
 {

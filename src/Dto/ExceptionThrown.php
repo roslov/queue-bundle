@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Dto;
 
 use Roslov\QueueBundle\Attribute\AsQueuePayload;
+use Roslov\QueueBundle\Tests\Dto\ExceptionThrownTest;
 
 /**
  * Event DTO: Exception was thrown.
+ *
+ * @see ExceptionThrownTest
  */
 #[AsQueuePayload('Exception.Thrown')]
 final class ExceptionThrown

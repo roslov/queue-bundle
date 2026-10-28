@@ -6,11 +6,14 @@ namespace Roslov\QueueBundle\Subscriber;
 
 use OldSound\RabbitMqBundle\Event\AMQPEvent;
 use Roslov\QueueBundle\Processor\EventProcessor;
+use Roslov\QueueBundle\Tests\Subscriber\EventSenderSubscriberTest;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Sends all previously stored events to the queue on the kernel termination.
+ *
+ * @see EventSenderSubscriberTest
  */
 final readonly class EventSenderSubscriber
 {

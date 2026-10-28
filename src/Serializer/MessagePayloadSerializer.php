@@ -7,6 +7,7 @@ namespace Roslov\QueueBundle\Serializer;
 use Roslov\QueueBundle\Exception\DeserializationException;
 use Roslov\QueueBundle\Factory\MessageFactory;
 use Roslov\QueueBundle\Factory\PayloadFactory;
+use Roslov\QueueBundle\Tests\Serializer\MessagePayloadSerializerTest;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -29,6 +30,8 @@ use const JSON_THROW_ON_ERROR;
  *
  * This class returns only the payload of a message. At the same time, the serialized string contains additional
  * information like message type, source, correlation id.
+ *
+ * @see MessagePayloadSerializerTest
  */
 final readonly class MessagePayloadSerializer
 {

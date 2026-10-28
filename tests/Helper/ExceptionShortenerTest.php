@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Tests\Helper;
 
 use Iterator;
+use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Roslov\QueueBundle\Helper\ExceptionShortener;
@@ -40,6 +41,19 @@ final class ExceptionShortenerTest extends TestCase
         $traceShortener = new ExceptionShortener(40, 0, 2);
         $shortenedMessage = $traceShortener->processMessage($messageString);
         $this->assertSame($expectedResult, $shortenedMessage);
+    }
+
+    /**
+     * Tests that processTrace throws LogicException when cutLengthStep is less than 1.
+     */
+    public function testProcessTraceThrowsWhenCutLengthStepIsLessThanOne(): void
+    {
+        $shortener = new ExceptionShortener(0, 10, 0);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Cut length cannot be less than 1');
+
+        $shortener->processTrace('Long trace that exceeds maxTraceSize');
     }
 
     /**

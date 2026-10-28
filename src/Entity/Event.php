@@ -8,11 +8,14 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Roslov\QueueBundle\Repository\EventRepository;
+use Roslov\QueueBundle\Tests\Entity\EventTest;
 
 /**
  * Event
  *
  * This entity contains an event to be sent to RabbitMQ using the Transactional Outbox pattern.
+ *
+ * @see EventTest
  */
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\Table(name: 'event')]

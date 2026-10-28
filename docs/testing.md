@@ -55,13 +55,7 @@ tests/
 
 ## Coverage priorities
 
-Currently tested: `AsQueuePayload`, `RoslovQueueBundle`, `RoslovQueueExtension` (payload mapping),
-`PayloadMappingPass`, `ExceptionShortener`.
-
-Not yet covered (add tests when touching these classes): `EventProcessor`, `MessagePayloadSerializer`,
-`PayloadFactory`, `MessageFactory`, `Rpc\Client`, `Rpc\Server`, `ExceptionSender`, `ExceptionSubscriber`,
-`EventSenderSubscriber`, `ProducerLocator`, `BaseProducer`, `SimpleSslContextProvider`, and `prepend()` of the
-extension.
+All core bundle classes under `src/` are covered by PHPUnit unit tests under `tests/` mirroring the `src/` hierarchy.
 
 ## Code coverage
 

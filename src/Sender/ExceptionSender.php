@@ -8,12 +8,15 @@ namespace Roslov\QueueBundle\Sender;
 
 use Roslov\QueueBundle\Helper\ExceptionShortener;
 use Roslov\QueueBundle\Producer\ProducerFacade;
+use Roslov\QueueBundle\Tests\Sender\ExceptionSenderTest;
 use Throwable;
 
 use function gethostname;
 
 /**
  * Sends an event about an exception.
+ *
+ * @see ExceptionSenderTest
  */
 final readonly class ExceptionSender
 {

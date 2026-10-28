@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Producer;
 
 use Roslov\QueueBundle\Processor\EventProcessor;
+use Roslov\QueueBundle\Tests\Producer\BaseProducerFacadeTest;
 
 /**
  * Keeps all calls to producers.
@@ -18,6 +19,8 @@ use Roslov\QueueBundle\Processor\EventProcessor;
  *     $this->send('user_changed', $payload);
  * }
  * ```
+ *
+ * @see BaseProducerFacadeTest
  */
 abstract class BaseProducerFacade
 {
