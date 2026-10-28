@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Producer;
 
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
+use Roslov\QueueBundle\Tests\Producer\BaseProducerTest;
 
 /**
  * Base producer.
  *
  * All producers should extend this class and set a routing key.
+ *
+ * @see BaseProducerTest
  */
 abstract class BaseProducer extends Producer implements ProducerInterface
 {

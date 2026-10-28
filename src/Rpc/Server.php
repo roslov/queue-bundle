@@ -12,12 +12,15 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Roslov\QueueBundle\Exception\InvalidHandlerRpcServerException;
 use Roslov\QueueBundle\Exception\UnsupportedCommandRpcServerException;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
+use Roslov\QueueBundle\Tests\Rpc\ServerTest;
 
 use function is_callable;
 use function sprintf;
 
 /**
  * RPC server.
+ *
+ * @see ServerTest
  */
 final readonly class Server
 {

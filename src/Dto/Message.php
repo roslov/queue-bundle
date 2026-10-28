@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Roslov\QueueBundle\Dto;
 
+use Roslov\QueueBundle\Tests\Dto\MessageTest;
+
 /**
  * Queue DTO: Message
+ *
+ * @see MessageTest
  */
 final class Message implements MessageInterface
 {

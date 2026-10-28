@@ -8,6 +8,7 @@ namespace Roslov\QueueBundle\Factory;
 
 use Roslov\QueueBundle\Exception\InvalidMessageTypeException;
 use Roslov\QueueBundle\Exception\InvalidPayloadClassException;
+use Roslov\QueueBundle\Tests\Factory\PayloadFactoryTest;
 
 use function array_search;
 use function sprintf;
@@ -16,6 +17,8 @@ use function sprintf;
  * Message payload factory.
  *
  * It creates the message payload DTOs based on the message type.
+ *
+ * @see PayloadFactoryTest
  */
 final class PayloadFactory
 {

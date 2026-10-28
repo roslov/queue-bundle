@@ -25,7 +25,8 @@ PHP 8.3 Docker container (see the `docker-verification` skill).
 - No network, database, or RabbitMQ access. Shared dummies go in `tests/Fixtures` (`final`, `Fixture: ...` doc).
 
 Existing fixtures: `DummyDto` (`Dummy`), `DummyCommandDto` (`DummyCommand`, RPC handler `DummyHandler`),
-`DummyConflictingDto` (duplicate type), `DummyCustomErrorDto` (overrides `Error`), `DummyHandler`.
+`DummyConflictingDto` (duplicate type), `DummyCustomErrorDto` (overrides `Error`), `DummyHandler`, `DummyProducer`,
+`DummyProducerFacade`.
 
 ---
 

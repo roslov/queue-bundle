@@ -6,6 +6,7 @@ namespace Roslov\QueueBundle\Subscriber;
 
 use InvalidArgumentException;
 use Roslov\QueueBundle\Sender\ExceptionSender;
+use Roslov\QueueBundle\Tests\Subscriber\ExceptionSubscriberTest;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -19,6 +20,8 @@ use function sprintf;
 
 /**
  * Sends an event automatically on exception.
+ *
+ * @see ExceptionSubscriberTest
  */
 final readonly class ExceptionSubscriber
 {

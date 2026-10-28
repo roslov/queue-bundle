@@ -6,6 +6,7 @@ namespace Roslov\QueueBundle\Factory;
 
 use Roslov\QueueBundle\Dto\Message;
 use Roslov\QueueBundle\Dto\MessageInterface;
+use Roslov\QueueBundle\Tests\Factory\MessageFactoryTest;
 
 /**
  * Message factory.
@@ -13,6 +14,7 @@ use Roslov\QueueBundle\Dto\MessageInterface;
  * It creates a new message with default values.
  *
  * @todo Add correlationId implementation.
+ * @see MessageFactoryTest
  */
 final readonly class MessageFactory
 {

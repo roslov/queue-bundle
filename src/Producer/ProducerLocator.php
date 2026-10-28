@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Producer;
 
 use Psr\Container\ContainerInterface;
+use Roslov\QueueBundle\Tests\Producer\ProducerLocatorTest;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /**
  * RabbitMQ producer locator — gets RabbitMQ producer without using the service container.
+ *
+ * @see ProducerLocatorTest
  */
 final readonly class ProducerLocator implements ServiceSubscriberInterface
 {

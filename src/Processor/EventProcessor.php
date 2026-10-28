@@ -13,6 +13,7 @@ use Roslov\QueueBundle\Exception\EventStorageFailedException;
 use Roslov\QueueBundle\Producer\BaseProducer;
 use Roslov\QueueBundle\Producer\ProducerLocator;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
+use Roslov\QueueBundle\Tests\Processor\EventProcessorTest;
 use Throwable;
 
 use function microtime;
@@ -20,6 +21,8 @@ use function sprintf;
 
 /**
  * Stores events into DB and sends them to the queue.
+ *
+ * @see EventProcessorTest
  */
 final class EventProcessor
 {

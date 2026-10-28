@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\RabbitMQ;
 
 use OldSound\RabbitMqBundle\Provider\ConnectionParametersProviderInterface;
+use Roslov\QueueBundle\Tests\RabbitMQ\SimpleSslContextProviderTest;
 
 /**
  * Class SimpleSslContextProvider — changes RabbitMQ params dynamically.
  *
  * It adds SSL context when needed.
+ *
+ * @see SimpleSslContextProviderTest
  */
 final readonly class SimpleSslContextProvider implements ConnectionParametersProviderInterface
 {

@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Roslov\QueueBundle\Attribute\AsQueuePayload;
 use Roslov\QueueBundle\DependencyInjection\Compiler\PayloadMappingPass;
 use Roslov\QueueBundle\DependencyInjection\Configuration;
+use Roslov\QueueBundle\DependencyInjection\RoslovQueueExtension;
 use Roslov\QueueBundle\Factory\PayloadFactory;
 use Roslov\QueueBundle\RoslovQueueBundle;
 use Roslov\QueueBundle\Rpc\Server;
@@ -17,6 +18,8 @@ use Roslov\QueueBundle\Tests\Fixtures\DummyHandler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
+
+use function dirname;
 
 /**
  * Tests the RoslovQueueBundle.
@@ -108,5 +111,25 @@ final class RoslovQueueBundleTest extends TestCase
         $handlers = $container->getDefinition('roslov_queue.rpc.server_callback')->getArgument(3);
         $this->assertArrayHasKey(DummyCommandDto::class, $handlers);
         $this->assertSame(DummyHandler::class, (string) $handlers[DummyCommandDto::class]);
+    }
+
+    /**
+     * Tests that getPath returns the bundle root directory.
+     */
+    public function testGetPath(): void
+    {
+        $bundle = new RoslovQueueBundle();
+
+        $this->assertSame(dirname(__DIR__), $bundle->getPath());
+    }
+
+    /**
+     * Tests that getContainerExtension returns RoslovQueueExtension instance.
+     */
+    public function testGetContainerExtension(): void
+    {
+        $bundle = new RoslovQueueBundle();
+
+        $this->assertInstanceOf(RoslovQueueExtension::class, $bundle->getContainerExtension());
     }
 }

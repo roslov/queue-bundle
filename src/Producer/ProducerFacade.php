@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Producer;
 
 use Roslov\QueueBundle\Dto\ExceptionThrown;
+use Roslov\QueueBundle\Tests\Producer\ProducerFacadeTest;
 
 /**
  * Keeps all calls to producers.
+ *
+ * @see ProducerFacadeTest
  */
 final class ProducerFacade extends BaseProducerFacade
 {
