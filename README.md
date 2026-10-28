@@ -141,7 +141,8 @@ old_sound_rabbit_mq:
 
 ### Message structure and DTOs
 
-The bundle uses DTOs (Data Transfer Objects) to pass data between microservices. When you send a DTO, it is wrapped in a `Roslov\QueueBundle\Dto\Message` object and serialized to JSON.
+The bundle uses DTOs (Data Transfer Objects) to pass data between microservices. When you send a DTO,
+it is wrapped in a `Roslov\QueueBundle\Dto\Message` object and serialized to JSON.
 
 The serialized message has the following JSON structure:
 
@@ -543,6 +544,31 @@ In case something happened, and you need to resend the same message again to the
 `return ConsumerInterface::MSG_SINGLE_NACK_REQUEUE;` instead of `return ConsumerInterface::MSG_ACK;` in your consumer.
 
 
+## Development environment
+
+The project provides a `Dockerfile` (installing extensions via PIE) and `compose.yaml` for containerized development.
+
+Build the development image:
+
+```shell
+docker compose build
+```
+
+Run test suites and static analysis:
+
+```shell
+docker compose run --rm app composer test:static
+docker compose run --rm app composer test:unit
+docker compose run --rm app composer test
+```
+
+Start an optional RabbitMQ instance for manual messaging tests:
+
+```shell
+docker compose up -d rabbitmq
+```
+
+
 ## Testing
 
 ### Unit testing
@@ -561,3 +587,10 @@ To run all static analyzers:
 composer test:static
 ```
 
+
+## Contributing
+
+Contributor and agent guidance lives in [`AGENTS.md`](AGENTS.md) and [`docs/`](docs):
+[requirements](docs/requirements.md), [architecture](docs/architecture.md), [security](docs/security.md),
+[testing](docs/testing.md), and [acceptance criteria](docs/acceptance-criteria.md).
+All project commands are run inside a PHP 8.3 Docker container (see [`docs/testing.md`](docs/testing.md)).
