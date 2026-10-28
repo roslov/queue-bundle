@@ -2,7 +2,7 @@
 
 ## Overview
 
-The bundle is tested with **PHPUnit 9** (`phpunit/phpunit ^9.5`, configured by `phpunit.xml.dist`). All tests live in
+The bundle is tested with **PHPUnit 12** (`phpunit/phpunit ^12.5`, configured by `phpunit.xml.dist`). All tests live in
 `tests/` under the namespace `Roslov\QueueBundle\Tests\` and mirror the `src/` structure.
 
 | Suite / command             | Tooling                                             | Status               |
@@ -49,6 +49,7 @@ tests/
   - `createMock()` with `expects()` only when verifying calls;
   - `ContainerBuilder` + `Definition` for DI tests (see `RoslovQueueBundleTest::testFullContainerCompilation()`).
 - Put reusable dummy classes in `tests/Fixtures` (`final`, documented, `Fixture: ...` summary).
+- Data providers use the `#[DataProvider]` attribute and must be declared as `public static`.
 - Use `assertSame()` over `assertEquals()`; PHPStan (`level: max`) analyses `tests/` as well, so add precise
   `@var` annotations when reading untyped values such as `Definition::getArgument()`.
 

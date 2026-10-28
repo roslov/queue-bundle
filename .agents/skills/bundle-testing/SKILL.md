@@ -8,7 +8,7 @@ description: >-
 
 # Bundle Testing Workflow
 
-Tests use **PHPUnit 9** (`phpunit.xml.dist`, suite `Queue bundle tests`, directory `./tests`). Run them only inside the
+Tests use **PHPUnit 12** (`phpunit.xml.dist`, suite `Queue bundle tests`, directory `./tests`). Run them only inside the
 PHP 8.3 Docker container (see the `docker-verification` skill).
 
 ## Conventions
@@ -17,6 +17,7 @@ PHP 8.3 Docker container (see the `docker-verification` skill).
 - `final class ...Test extends PHPUnit\Framework\TestCase`; class and each test method have a doc block.
 - Production class doc block links back to its test: `@see ServerTest` (with `use ...\Tests\Rpc\ServerTest;`).
 - `declare(strict_types=1);`, `assertSame()`, explicit `use function ...;` imports where the codebase uses them.
+- Data providers use `#[DataProvider('providerName')]` and are declared as `public static`.
 - `createStub()` when no expectations are set; `createMock()` + `expects()` only to verify interactions
   (Rector `phpunitMockToStub` will flag mocks without expectations).
 - PHPStan `level: max` covers `tests/`; annotate untyped values (`/** @var array<string, string> $mapping */`).

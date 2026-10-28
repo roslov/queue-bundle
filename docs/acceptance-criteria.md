@@ -3,7 +3,7 @@
 ## Environment and repository hygiene
 
 - [ ] All project commands run inside a PHP 8.3 Docker container; nothing is installed on the host or WSL.
-- [ ] `composer.lock`, `vendor/`, `.idea/`, and `.phpunit.result.cache` are not committed.
+- [ ] `composer.lock`, `vendor/`, `.idea/`, `.phpunit.cache/`, and `.phpunit.result.cache` are not committed.
 - [ ] Development-only files are `export-ignore`d in `.gitattributes`.
 - [ ] No real credentials, hostnames, or production endpoints appear in code, tests, or documentation.
 

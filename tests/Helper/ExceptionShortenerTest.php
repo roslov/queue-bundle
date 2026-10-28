@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Tests\Helper;
 
 use Iterator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Roslov\QueueBundle\Helper\ExceptionShortener;
 
@@ -18,9 +19,8 @@ final class ExceptionShortenerTest extends TestCase
      *
      * @param string $traceString Original trace string
      * @param string $expectedResult Expected result
-     *
-     * @dataProvider traceProvider
      */
+    #[DataProvider('traceProvider')]
     public function testCorrectTraceShortening(string $traceString, string $expectedResult): void
     {
         $traceShortener = new ExceptionShortener(0, 64);
@@ -33,9 +33,8 @@ final class ExceptionShortenerTest extends TestCase
      *
      * @param string $messageString Original message string
      * @param string $expectedResult Expected result
-     *
-     * @dataProvider messageProvider
      */
+    #[DataProvider('messageProvider')]
     public function testCorrectMessageShortening(string $messageString, string $expectedResult): void
     {
         $traceShortener = new ExceptionShortener(40, 0, 2);
@@ -48,7 +47,7 @@ final class ExceptionShortenerTest extends TestCase
      *
      * @return Iterator<(int | string), array<string>> Initial and corrected exception trace strings
      */
-    public function traceProvider(): Iterator
+    public static function traceProvider(): Iterator
     {
         yield 'trace is too large' => [
             "#0 /app/vendor/symfony/\n\n#1 symfony/src/Symfony/\n#2 Bundle/FrameworkBundle/\n#3 trace text/",
@@ -86,7 +85,7 @@ final class ExceptionShortenerTest extends TestCase
      *
      * @return Iterator<(int | string), array<string>> Initial and corrected exception message strings
      */
-    public function messageProvider(): Iterator
+    public static function messageProvider(): Iterator
     {
         yield 'encoded message is too large' => [
             // JSON encoded (83 chars):
