@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Entity;
 
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Roslov\QueueBundle\Repository\EventRepository;
 
@@ -12,9 +13,6 @@ use Roslov\QueueBundle\Repository\EventRepository;
  * Event
  *
  * This entity contains an event to be sent to RabbitMQ using the Transactional Outbox pattern.
- *
- * @ORM\Entity(repositoryClass=EventRepository::class)
- * @ORM\Table(name="event")
  */
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\Table(name: 'event')]
@@ -23,7 +21,7 @@ class Event
     /**
      * @var int|null Id
      */
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Id]
     private ?int $id = null;
@@ -31,32 +29,32 @@ class Event
     /**
      * @var float|null Unix timestamp with microseconds when the event was saved
      */
-    #[ORM\Column(type: 'float')]
+    #[ORM\Column(type: Types::FLOAT)]
     private ?float $microtime = null;
 
     /**
      * @var string|null Producer name
      */
-    #[ORM\Column(type: 'string', length: 64)]
+    #[ORM\Column(type: Types::STRING, length: 64)]
     private ?string $producerName = null;
 
     /**
      * @var string|null Full message body
      */
-    #[ORM\Column(type: 'string', length: 4096)]
+    #[ORM\Column(type: Types::STRING, length: 4096)]
     private ?string $body = null;
 
     /**
      * @var DateTimeInterface|null Creation timestamp
      */
-    #[ORM\Column(type: 'datetime', nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     #[ORM\GeneratedValue]
     private ?DateTimeInterface $createdAt = null;
 
     /**
      * @var DateTimeInterface|null Update timestamp
      */
-    #[ORM\Column(type: 'datetime', nullable: false)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
     #[ORM\GeneratedValue]
     private ?DateTimeInterface $updatedAt = null;
 

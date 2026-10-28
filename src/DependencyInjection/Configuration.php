@@ -12,7 +12,6 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 use function json_encode;
-use function method_exists;
 
 /**
  * Queue configuration.
@@ -40,9 +39,7 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder(self::NODE_NAME);
-        $rootNode = method_exists(TreeBuilder::class, 'getRootNode')
-            ? $treeBuilder->getRootNode()
-            : $treeBuilder->root(self::NODE_NAME);
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode
             ->children()
                 ->scalarNode('service_name')
@@ -68,7 +65,7 @@ final class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('payload_mapping')
                     ->info('Key/value pair of the mapping of message type to payload')
-                    ->example(json_encode(self::DEFAULT_PAYLOADS))
+                    ->example((string) json_encode(self::DEFAULT_PAYLOADS))
                     ->useAttributeAsKey('name')
                     ->defaultValue(self::DEFAULT_PAYLOADS)
                     ->scalarPrototype()->end()
@@ -181,7 +178,7 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                         ->arrayNode('handlers')
                             ->info('Command handlers')
-                            ->example(json_encode(['App\Dto\Queue\GetUserCommand' => 'App\Rpc\UserHandler']))
+                            ->example((string) json_encode(['App\Dto\Queue\GetUserCommand' => 'App\Rpc\UserHandler']))
                             ->useAttributeAsKey('name')
                             ->scalarPrototype()->end()
                         ->end()

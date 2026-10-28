@@ -22,18 +22,12 @@ use Roslov\QueueBundle\Processor\EventProcessor;
 abstract class BaseProducerFacade
 {
     /**
-     * @var EventProcessor Event processor
-     */
-    private EventProcessor $eventProcessor;
-
-    /**
      * Constructor.
      *
      * @param EventProcessor $eventProcessor Event processor
      */
-    public function __construct(EventProcessor $eventProcessor)
+    public function __construct(private readonly EventProcessor $eventProcessor)
     {
-        $this->eventProcessor = $eventProcessor;
     }
 
     /**

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle;
 
 use ReflectionClass;
+use Reflector;
 use Roslov\QueueBundle\Attribute\AsQueuePayload;
 use Roslov\QueueBundle\DependencyInjection\Compiler\PayloadMappingPass;
 use Roslov\QueueBundle\DependencyInjection\RoslovQueueExtension;
+use Roslov\QueueBundle\Tests\RoslovQueueBundleTest;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
@@ -17,6 +19,8 @@ use function dirname;
 
 /**
  * Queue bundle.
+ *
+ * @see RoslovQueueBundleTest
  */
 final class RoslovQueueBundle extends Bundle
 {
@@ -31,7 +35,7 @@ final class RoslovQueueBundle extends Bundle
     /**
      * @inheritDoc
      */
-    public function getContainerExtension(): ?ExtensionInterface
+    public function getContainerExtension(): ExtensionInterface
     {
         return new RoslovQueueExtension();
     }
@@ -48,8 +52,12 @@ final class RoslovQueueBundle extends Bundle
             static function (
                 ChildDefinition $definition,
                 AsQueuePayload $attribute,
-                ReflectionClass $reflector,
+                Reflector $reflector,
             ): void {
+                if (!$reflector instanceof ReflectionClass) {
+                    return;
+                }
+
                 $tagAttributes = [
                     'type' => $attribute->getType(),
                     'class' => $reflector->getName(),
@@ -57,6 +65,7 @@ final class RoslovQueueBundle extends Bundle
                 if ($attribute->getRpcHandler() !== null) {
                     $tagAttributes['rpc_handler'] = $attribute->getRpcHandler();
                 }
+
                 $definition->addTag('roslov_queue.payload', $tagAttributes);
             },
         );

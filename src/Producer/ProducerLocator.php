@@ -10,21 +10,15 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
 /**
  * RabbitMQ producer locator — gets RabbitMQ producer without using the service container.
  */
-final class ProducerLocator implements ServiceSubscriberInterface
+final readonly class ProducerLocator implements ServiceSubscriberInterface
 {
-    /**
-     * @var ContainerInterface Service container
-     */
-    private ContainerInterface $locator;
-
     /**
      * Constructor.
      *
      * @param ContainerInterface $locator Service container
      */
-    public function __construct(ContainerInterface $locator)
+    public function __construct(private ContainerInterface $locator)
     {
-        $this->locator = $locator;
     }
 
     /**
@@ -38,6 +32,7 @@ final class ProducerLocator implements ServiceSubscriberInterface
     {
         $producerServiceName = "old_sound_rabbit_mq.{$name}_producer";
 
+        /** @phpstan-var BaseProducer */
         return $this->locator->get($producerServiceName);
     }
 

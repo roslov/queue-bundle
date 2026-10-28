@@ -7,11 +7,13 @@ namespace Roslov\QueueBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Roslov\QueueBundle\Entity\Event;
 
+// phpcs:disable Generic.Files.LineLength.TooLong
 /**
+ * @extends EntityRepository<Event>
  * @method Event|null find($id, $lockMode = null, $lockVersion = null)
- * @method Event|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Event|null findOneBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null)
  * @method Event[] findAll()
- * @method Event[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Event[] findBy(array<string, mixed> $criteria, array<string, string>|null $orderBy = null, int|null $limit = null, int|null $offset = null)
  */
 final class EventRepository extends EntityRepository
 {

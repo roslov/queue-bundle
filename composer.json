@@ -1,30 +1,39 @@
 {
     "name": "roslov/queue-bundle",
-    "type": "symfony-bundle",
     "description": "Queue bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
     "keywords": [
         "RabbitMQ",
         "queue",
         "bundle"
     ],
-    "license": "MIT",
+    "support": {
+        "source": "https://github.com/roslov/queue-bundle"
+    },
     "require": {
         "php": "^8.3",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-sockets": "*",
-        "doctrine/orm": "^2.11|^3.0",
+        "doctrine/orm": "^3.2",
         "php-amqplib/rabbitmq-bundle": "^2.12",
         "roslov/log-obfuscator": "^1.0",
-        "symfony/config": "^6.0|^7.0",
-        "symfony/dependency-injection": "^6.0|^7.0",
-        "symfony/framework-bundle": "^6.0|^7.0",
-        "symfony/property-access": "^6.0|^7.0",
-        "symfony/serializer": "^6.0|^7.0"
+        "symfony/config": "^6.0 || ^7.0",
+        "symfony/dependency-injection": "^6.0 || ^7.0",
+        "symfony/framework-bundle": "^6.0 || ^7.0",
+        "symfony/property-access": "^6.0 || ^7.0",
+        "symfony/serializer": "^6.0 || ^7.0"
     },
     "require-dev": {
+        "ergebnis/composer-normalize": "^2.54",
+        "php-parallel-lint/php-console-highlighter": "^1.0",
+        "php-parallel-lint/php-parallel-lint": "^1.4",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.1",
         "phpunit/phpunit": "^9.5",
-        "roslov/psr12ext": "^14.1"
+        "rector/rector": "^2.8",
+        "roslov/psr12ext": "^14.3"
     },
     "autoload": {
         "psr-4": {
@@ -37,14 +46,43 @@
         }
     },
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
-            "infection/extension-installer": true,
             "composer/package-versions-deprecated": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        }
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true,
+            "infection/extension-installer": true
+        },
+        "sort-packages": true
     },
-    "support": {
-        "source": "https://github.com/roslov/queue-bundle"
+    "scripts": {
+        "phpcbf": "phpcbf -d memory_limit=512M --extensions=php --colors --standard=PSR12Ext --ignore=vendor/* --runtime-set php_version \"$(php -r 'echo PHP_VERSION_ID;')\" -p",
+        "phpcs": "phpcs -d memory_limit=512M --extensions=php --colors --standard=PSR12Ext --ignore=vendor/* --runtime-set php_version \"$(php -r 'echo PHP_VERSION_ID;')\" -p -s",
+        "phpstan": "phpstan analyse --memory-limit=512M",
+        "syntax": "parallel-lint --colors --exclude bin --exclude vendor --exclude var",
+        "test": [
+            "@test:static",
+            "@test:unit",
+            "@test:integration"
+        ],
+        "test:integration": "echo 'Integration tests are not implemented.'",
+        "test:static": [
+            "@composer validate",
+            "@composer normalize --dry-run",
+            "@syntax .",
+            "@phpcs .",
+            "@phpstan",
+            "rector --dry-run"
+        ],
+        "test:unit": "phpunit"
+    },
+    "scripts-descriptions": {
+        "phpcbf": "Fixes PHP CodeSniffer issues",
+        "phpcs": "Runs PHP CodeSniffer",
+        "phpstan": "Runs PHPStan static analysis",
+        "syntax": "Checks PHP syntax",
+        "test": "Runs static analysis and all tests",
+        "test:integration": "Runs integration tests",
+        "test:static": "Runs static analysis",
+        "test:unit": "Runs unit tests"
     }
 }

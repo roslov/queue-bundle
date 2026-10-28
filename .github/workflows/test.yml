@@ -72,4 +72,4 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Run tests with phpunit
-        run: vendor/bin/phpunit --colors=always
+        run: composer test:unit

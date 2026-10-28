@@ -10,7 +10,6 @@ use Roslov\QueueBundle\Exception\InvalidMessageTypeException;
 use Roslov\QueueBundle\Exception\InvalidPayloadClassException;
 
 use function array_search;
-use function get_class;
 use function sprintf;
 
 /**
@@ -21,18 +20,12 @@ use function sprintf;
 final class PayloadFactory
 {
     /**
-     * @var array<string, string> Type-to-payload mapping
-     */
-    private array $payloadMapping;
-
-    /**
      * Constructor.
      *
      * @param array<string, string> $payloadMapping Type-to-payload mapping
      */
-    public function __construct(array $payloadMapping)
+    public function __construct(private array $payloadMapping)
     {
-        $this->payloadMapping = $payloadMapping;
     }
 
     /**
@@ -81,7 +74,7 @@ final class PayloadFactory
      */
     public function getMessageType(object $payload): string
     {
-        $class = get_class($payload);
+        $class = $payload::class;
         $type = array_search($class, $this->payloadMapping, true);
         if ($type === false) {
             throw new InvalidPayloadClassException(sprintf('Payload class "%s" is not supported.', $class));

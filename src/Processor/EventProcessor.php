@@ -24,42 +24,6 @@ use function sprintf;
 final class EventProcessor
 {
     /**
-     * @var bool Whether the event processor is enabled. If disabled, no events will be sent or saved
-     */
-    private bool $enabled;
-
-    /**
-     * @var bool Whether the event processor uses instant delivery. If disabled, the event processor is used as
-     * transactional outbox
-     */
-    private bool $instantDelivery;
-
-    /**
-     * @var ProducerLocator Producer locator
-     */
-    private ProducerLocator $producerLocator;
-
-    /**
-     * @var EntityManagerInterface|null Entity manager
-     */
-    private ?EntityManagerInterface $em = null;
-
-    /**
-     * @var LoggerInterface Logger
-     */
-    private LoggerInterface $logger;
-
-    /**
-     * @var MessagePayloadSerializer Message payload serializer
-     */
-    private MessagePayloadSerializer $serializer;
-
-    /**
-     * @var LogObfuscator Log obfuscator
-     */
-    private LogObfuscator $obfuscator;
-
-    /**
      * @var Event[] Events stored for later persisting and flushing
      */
     private static array $events = [];
@@ -77,21 +41,14 @@ final class EventProcessor
      * @param LogObfuscator $obfuscator Log obfuscator
      */
     public function __construct(
-        bool $enabled,
-        bool $instantDelivery,
-        ProducerLocator $producerLocator,
-        ?EntityManagerInterface $em,
-        LoggerInterface $logger,
-        MessagePayloadSerializer $serializer,
-        LogObfuscator $obfuscator,
+        private readonly bool $enabled,
+        private readonly bool $instantDelivery,
+        private readonly ProducerLocator $producerLocator,
+        private readonly ?EntityManagerInterface $em,
+        private readonly LoggerInterface $logger,
+        private readonly MessagePayloadSerializer $serializer,
+        private readonly LogObfuscator $obfuscator,
     ) {
-        $this->enabled = $enabled;
-        $this->instantDelivery = $instantDelivery;
-        $this->producerLocator = $producerLocator;
-        $this->obfuscator = $obfuscator;
-        $this->serializer = $serializer;
-        $this->logger = $logger;
-        $this->em = $em;
     }
 
     /**
@@ -171,12 +128,14 @@ final class EventProcessor
             foreach (self::$events as $event) {
                 $this->getEntityManager()->persist($event);
             }
+
             $this->getEntityManager()->flush();
         } catch (Throwable $e) {
             $this->logger->error(sprintf('Could not store queue messages. Reason: %s', $e->getMessage()));
 
-            throw new EventStorageFailedException(message: $e->getMessage(), previous: $e);
+            throw new EventStorageFailedException(message: $e->getMessage(), code: $e->getCode(), previous: $e);
         }
+
         self::$events = [];
         $this->logger->debug('Saved.');
     }
@@ -214,7 +173,7 @@ final class EventProcessor
         }
 
         while ($event = $this->getEntityManager()->getRepository(Event::class)->findOneBy([], ['microtime' => 'ASC'])) {
-            $this->send($event->getProducerName(), $event->getBody());
+            $this->send((string) $event->getProducerName(), (string) $event->getBody());
             $this->getEntityManager()->remove($event);
             $this->getEntityManager()->flush();
             $this->logger->debug('Removed from DB.');
@@ -244,7 +203,7 @@ final class EventProcessor
         } catch (Throwable $e) {
             $this->logger->error(sprintf('Could not store the queue message. Reason: %s', $e->getMessage()));
 
-            throw new EventStorageFailedException(message: $e->getMessage(), previous: $e);
+            throw new EventStorageFailedException(message: $e->getMessage(), code: $e->getCode(), previous: $e);
         }
     }
 
@@ -267,7 +226,7 @@ final class EventProcessor
      */
     private function getEntityManager(): EntityManagerInterface
     {
-        if ($this->em === null) {
+        if (!$this->em instanceof EntityManagerInterface) {
             throw new LogicException(
                 'You cannot use the event processor with delayed delivery without providing an entity manager.',
             );
