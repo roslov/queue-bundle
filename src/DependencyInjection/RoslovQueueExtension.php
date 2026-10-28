@@ -9,10 +9,10 @@ use Roslov\QueueBundle\Producer\ExceptionThrownProducer;
 use Roslov\QueueBundle\Tests\DependencyInjection\RoslovQueueExtensionTest;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 use function array_keys;
 use function array_merge;

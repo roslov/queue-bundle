@@ -9,7 +9,7 @@
 
 ## Compatibility
 
-- [ ] The bundle installs and works on PHP 8.3, 8.4, and 8.5 with Symfony 6 and 7 (`composer.json`, CI matrix).
+- [ ] The bundle installs and works on PHP 8.3, 8.4, and 8.5 with Symfony 6, 7, and 8 (`composer.json`, CI matrix).
 - [ ] Public API, configuration keys and defaults, service IDs/aliases, tags, and prepended RabbitMQ names remain
       backward compatible unless a break is explicitly requested and documented.
 - [ ] The JSON envelope (`type`, `source`, `correlationId`, `data`) and default message types are unchanged.

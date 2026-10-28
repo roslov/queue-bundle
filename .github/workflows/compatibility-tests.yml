@@ -1,0 +1,120 @@
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
+
+  push:
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'infection.json.dist'
+      - 'psalm.xml'
+
+name: Compatibility tests
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }} | Symfony ${{ matrix.symfony }} | RabbitMQ Bundle ${{ matrix.rabbitmq-bundle }} | Doctrine ORM ${{ matrix.orm }}
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php:
+          - 8.5
+          - 8.4
+          - 8.3
+# TODO: Uncomment after fixing PHP 8.6 compatibility with Composer Normalizer
+#          - 8.6
+
+        symfony:
+          # Strings are needed here to prevent converting to major versions (6.0 could be 6)
+          - "8.0"
+          - "7.4"
+          - "7.0"
+          - "6.4"
+          - "6.0"
+
+        rabbitmq-bundle:
+          - 2.19.0
+          - 2.15.0
+          - 2.12.0
+
+        orm:
+          - 3.7.5
+          - 3.3.4
+          - 3.2.0
+
+        # Incompatible combinations
+        exclude:
+          # Dependency incompatibility
+          - php: 8.3
+            symfony: "8.0"
+
+          - symfony: "8.0"
+            rabbitmq-bundle: 2.15.0
+          - symfony: "8.0"
+            rabbitmq-bundle: 2.12.0
+          - symfony: "8.0"
+            orm: 3.3.4
+          - symfony: "8.0"
+            orm: 3.2.0
+
+          - symfony: "7.4"
+            rabbitmq-bundle: 2.12.0
+          - symfony: "7.0"
+            rabbitmq-bundle: 2.12.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: date.timezone='UTC'
+          coverage: none
+          tools: composer:v2
+
+      - name: Determine composer cache directory on Linux
+        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.COMPOSER_CACHE_DIR }}
+          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php }}-composer-
+
+      - name: Update composer
+        run: composer self-update
+
+      - name: Install dependencies
+        run: |
+          COMPOSER_NO_AUDIT=1 COMPOSER_NO_SECURITY_BLOCKING=1 \
+          composer require \
+            "symfony/config:${{ matrix.symfony }}.*" \
+            "symfony/dependency-injection:${{ matrix.symfony }}.*" \
+            "symfony/framework-bundle:${{ matrix.symfony }}.*" \
+            "symfony/property-access:${{ matrix.symfony }}.*" \
+            "symfony/serializer:${{ matrix.symfony }}.*" \
+            "php-amqplib/rabbitmq-bundle:${{ matrix.rabbitmq-bundle }}" \
+            "doctrine/orm:${{ matrix.orm }}" \
+            --no-update \
+            --no-audit
+          COMPOSER_NO_AUDIT=1 COMPOSER_NO_SECURITY_BLOCKING=1 \
+          composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: Run tests with phpunit
+        run: composer test:unit

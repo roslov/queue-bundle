@@ -79,8 +79,9 @@ Docker access may require running the command outside the agent sandbox (the Doc
 - `composer.lock` is git-ignored; `composer install` may resolve versions locally. Do not commit the lock file.
 - If `vendor/` was installed with a newer PHP and fails on 8.3, run `composer update` inside the 8.3 container and
   report it. Do not change constraints in `composer.json` without a request.
-- CI (`.github/workflows/test.yml`, `static.yml`) runs `composer update` on PHP 8.3, 8.4, and 8.5. When a change
-  might behave differently on newer PHP, mention it in the report; the only local image required is PHP 8.3.
+- CI (`.github/workflows/unit-tests.yml`, `static.yml`, `compatibility-tests.yml`) runs `composer update` on PHP 8.3,
+  8.4, and 8.5. When a change might behave differently on newer PHP, mention it in the report; the only local image
+  required is PHP 8.3.
 
 ---
 

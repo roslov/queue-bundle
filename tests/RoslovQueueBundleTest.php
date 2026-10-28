@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 use Roslov\QueueBundle\Attribute\AsQueuePayload;
 use Roslov\QueueBundle\DependencyInjection\Compiler\PayloadMappingPass;
 use Roslov\QueueBundle\DependencyInjection\Configuration;
@@ -35,7 +36,11 @@ final class RoslovQueueBundleTest extends TestCase
         $bundle = new RoslovQueueBundle();
         $bundle->build($container);
 
-        $this->assertArrayHasKey(AsQueuePayload::class, $container->getAutoconfiguredAttributes());
+        $reflectionProperty = new ReflectionProperty(ContainerBuilder::class, 'autoconfiguredAttributes');
+        /** @var array<class-string, mixed> $autoconfiguredAttributes */
+        $autoconfiguredAttributes = $reflectionProperty->getValue($container);
+
+        $this->assertArrayHasKey(AsQueuePayload::class, $autoconfiguredAttributes);
 
         $hasPass = false;
         foreach ($container->getCompilerPassConfig()->getBeforeOptimizationPasses() as $pass) {
