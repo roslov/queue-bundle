@@ -6,6 +6,7 @@ namespace Roslov\QueueBundle\DependencyInjection;
 
 use Roslov\QueueBundle\DependencyInjection\Compiler\PayloadMappingPass;
 use Roslov\QueueBundle\Producer\ExceptionThrownProducer;
+use Roslov\QueueBundle\Tests\DependencyInjection\RoslovQueueExtensionTest;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -21,6 +22,8 @@ use function md5;
 
 /**
  * Queue extension.
+ *
+ * @see RoslovQueueExtensionTest
  */
 final class RoslovQueueExtension extends Extension implements PrependExtensionInterface
 {
@@ -38,6 +41,33 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
         $loader->load('services.yaml');
 
         $configuration = new Configuration();
+        /**
+         * @var array{
+         *     logger: string,
+         *     entity_manager: string|null,
+         *     event_processor: array{
+         *         enabled: bool,
+         *         delayed_delivery_subscriber: string|null,
+         *         instant_delivery: bool
+         *     },
+         *     service_name: string,
+         *     ssl_enabled: bool,
+         *     rpc_server: array{
+         *         enabled: bool,
+         *         handlers?: array<string, string>,
+         *         setup: string|null
+         *     },
+         *     rpc_client: array{
+         *         enabled: bool
+         *     },
+         *     exception_subscriber: array{
+         *         enabled: bool,
+         *         exception_validator: string|null
+         *     },
+         *     payload_mapping: array<string, string>
+         * } $config
+         * @phpstan-var array<array<string, mixed>> $configs
+         */
         $config = $this->processConfiguration($configuration, $configs);
 
         $emRef = $config['entity_manager'] !== null ? new Reference($config['entity_manager']) : null;
@@ -105,6 +135,25 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
      */
     public function prepend(ContainerBuilder $container): void
     {
+        /**
+         * @var array{
+         *     rpc_client: array{
+         *         enabled: bool,
+         *         connection: string|null
+         *     },
+         *     rpc_server: array{
+         *         enabled: bool,
+         *         connection: string,
+         *         exchange: string
+         *     },
+         *     exception_sender: array{
+         *         enabled: bool,
+         *         connection: string,
+         *         exchange: string,
+         *         exchange_options: array<string, string|bool>
+         *     }
+         * } $config
+         */
         $config = $this->processConfiguration(new Configuration(), $container->getExtensionConfig($this->getAlias()));
 
         $rabbitMqConfig = [];
@@ -117,6 +166,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
                 ],
             ];
         }
+
         if ($config['rpc_server']['enabled']) {
             $rabbitMqConfig['rpc_servers'] = [
                 'roslov_queue' => [
@@ -170,7 +220,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
     /**
      * Generate the queue name for the RPC server.
      *
-     * @param array<string, string> $serverConfig RPC server config
+     * @param array<string, string|bool> $serverConfig RPC server config
      *
      * @return string Queue name
      */
@@ -190,6 +240,7 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
     {
         $types = [];
         foreach ($configs as $rawConfig) {
+            /** @var array<string, mixed>|null $mapping */
             $mapping = $rawConfig['payload_mapping'] ?? null;
             if (is_array($mapping)) {
                 $this->collectPayloadTypes($types, $mapping);

@@ -6,6 +6,7 @@ namespace Roslov\QueueBundle\DependencyInjection\Compiler;
 
 use LogicException;
 use Roslov\QueueBundle\DependencyInjection\Configuration;
+use Roslov\QueueBundle\Tests\DependencyInjection\Compiler\PayloadMappingPassTest;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -16,6 +17,8 @@ use function sprintf;
 
 /**
  * Registers message payloads and RPC handlers configured via attributes or configuration.
+ *
+ * @see PayloadMappingPassTest
  */
 final class PayloadMappingPass implements CompilerPassInterface
 {
@@ -123,6 +126,7 @@ final class PayloadMappingPass implements CompilerPassInterface
         array $configuredPayloadTypes,
     ): void {
         $taggedServices = $container->findTaggedServiceIds('roslov_queue.payload');
+        /** @var array<array<string, mixed>> $tags */
         foreach ($taggedServices as $id => $tags) {
             $definition = $container->getDefinition($id);
             $className = $definition->getClass() ?? $id;
@@ -204,9 +208,7 @@ final class PayloadMappingPass implements CompilerPassInterface
      */
     private function registerHandler(array &$handlers, string $payloadClass, string $rpcHandler): void
     {
-        if (!isset($handlers[$payloadClass])) {
-            $handlers[$payloadClass] = new Reference($rpcHandler);
-        }
+        $handlers[$payloadClass] ??= new Reference($rpcHandler);
     }
 
     /**

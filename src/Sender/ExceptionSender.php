@@ -7,47 +7,28 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Sender;
 
 use Roslov\QueueBundle\Helper\ExceptionShortener;
-use Roslov\QueueBundle\Producer\BaseProducerFacade;
+use Roslov\QueueBundle\Producer\ProducerFacade;
 use Throwable;
 
-use function get_class;
 use function gethostname;
 
 /**
  * Sends an event about an exception.
  */
-final class ExceptionSender
+final readonly class ExceptionSender
 {
-    /**
-     * @var BaseProducerFacade Producer facade
-     */
-    private BaseProducerFacade $producerFacade;
-
-    /**
-     * @var ExceptionShortener Exception shortener
-     */
-    private ExceptionShortener $exceptionShortener;
-
-    /**
-     * @var String $serviceName Service name
-     */
-    private string $serviceName;
-
     /**
      * Constructor.
      *
-     * @param BaseProducerFacade $producerFacade Producer facade
+     * @param ProducerFacade $producerFacade Producer facade
      * @param ExceptionShortener $exceptionShortener Exception shortener
      * @param string $serviceName Service name
      */
     public function __construct(
-        BaseProducerFacade $producerFacade,
-        ExceptionShortener $exceptionShortener,
-        string $serviceName,
+        private ProducerFacade $producerFacade,
+        private ExceptionShortener $exceptionShortener,
+        private string $serviceName,
     ) {
-        $this->producerFacade = $producerFacade;
-        $this->exceptionShortener = $exceptionShortener;
-        $this->serviceName = $serviceName;
     }
 
     /**
@@ -58,17 +39,18 @@ final class ExceptionSender
     public function sendExceptionThrownEvent(Throwable $exception): void
     {
         // phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
+        /** @phpstan-var string|null $uri */
         $uri = $_SERVER['REQUEST_URI'] ?? null;
         // phpcs:enable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable.DisallowedSuperGlobalVariable
         $this->producerFacade->sendExceptionThrownEvent(
             $this->serviceName,
             gethostname() ?: null,
-            get_class($exception),
+            $exception::class,
             $exception->getFile(),
             $exception->getLine(),
             $this->exceptionShortener->processMessage($exception->getMessage()),
             $this->exceptionShortener->processTrace($exception->getTraceAsString()),
-            $uri ? $this->exceptionShortener->processMessage($uri) : null,
+            $uri ? $this->exceptionShortener->processMessage((string) $uri) : null,
         );
     }
 }

@@ -17,23 +17,8 @@ use function sprintf;
 /**
  * RPC client.
  */
-final class Client implements ClientInterface
+final readonly class Client implements ClientInterface
 {
-    /**
-     * @var RpcClient|null RPC client
-     */
-    private ?RpcClient $client = null;
-
-    /**
-     * @var MessagePayloadSerializer Message payload serializer
-     */
-    private MessagePayloadSerializer $serializer;
-
-    /**
-     * @var IdGeneratorInterface Id generator
-     */
-    private IdGeneratorInterface $idGenerator;
-
     /**
      * Constructor.
      *
@@ -42,13 +27,10 @@ final class Client implements ClientInterface
      * @param IdGeneratorInterface $idGenerator Id generator
      */
     public function __construct(
-        ?RpcClient $client,
-        MessagePayloadSerializer $serializer,
-        IdGeneratorInterface $idGenerator,
+        private ?RpcClient $client,
+        private MessagePayloadSerializer $serializer,
+        private IdGeneratorInterface $idGenerator,
     ) {
-        $this->client = $client;
-        $this->serializer = $serializer;
-        $this->idGenerator = $idGenerator;
     }
 
     /**
@@ -56,17 +38,20 @@ final class Client implements ClientInterface
      */
     public function call(object $command, string $exchangeName, int $timeout = self::TIMEOUT): object
     {
-        if ($this->client === null) {
+        if (!$this->client instanceof RpcClient) {
             throw new LogicException('RPC client should be set.');
         }
+
         $message = $this->serializer->serialize($command);
         $requestId = $this->idGenerator->generateId();
         $this->client->addRequest($message, $exchangeName, $requestId, '', $timeout);
         try {
+            /** @var array<string, string> $replies */
             $replies = $this->client->getReplies();
         } catch (AMQPTimeoutException $e) {
-            throw new TimeoutRpcClientException($e->getMessage());
+            throw new TimeoutRpcClientException($e->getMessage(), $e->getCode(), $e);
         }
+
         if (!isset($replies[$requestId])) {
             throw new RequestIdNotFoundRpcClientException(
                 sprintf('RPC call response does not contain request id "%s".', $requestId),

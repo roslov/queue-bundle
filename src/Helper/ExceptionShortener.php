@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roslov\QueueBundle\Helper;
 
 use LogicException;
+use Roslov\QueueBundle\Tests\Helper\ExceptionShortenerTest;
 
 use function array_pop;
 use function explode;
@@ -16,8 +17,10 @@ use function strlen;
 
 /**
  * Checks whether the exception trace and message strings are bigger than their limits and accurately shortens it.
+ *
+ * @see ExceptionShortenerTest
  */
-final class ExceptionShortener
+final readonly class ExceptionShortener
 {
     /**
      * Maximum exception message string size in bytes
@@ -40,21 +43,6 @@ final class ExceptionShortener
     private const string TRIMMED_STRING_CAP = '...';
 
     /**
-     * @var int Maximum exception message string size in bytes
-     */
-    private int $maxMessageSize;
-
-    /**
-     * @var int Maximum exception trace string size in bytes
-     */
-    private int $maxTraceSize;
-
-    /**
-     * @var int The length to cut on each step
-     */
-    private int $cutLengthStep;
-
-    /**
      * Constructor.
      *
      * @param int $maxMessageSize Maximum exception message string size in bytes
@@ -62,13 +50,10 @@ final class ExceptionShortener
      * @param int $cutLengthStep The length to cut on each step
      */
     public function __construct(
-        int $maxMessageSize = self::MAX_MESSAGE_SIZE,
-        int $maxTraceSize = self::MAX_TRACE_SIZE,
-        int $cutLengthStep = self::CUT_LENGTH_STEP,
+        private int $maxMessageSize = self::MAX_MESSAGE_SIZE,
+        private int $maxTraceSize = self::MAX_TRACE_SIZE,
+        private int $cutLengthStep = self::CUT_LENGTH_STEP,
     ) {
-        $this->maxTraceSize = $maxTraceSize;
-        $this->maxMessageSize = $maxMessageSize;
-        $this->cutLengthStep = $cutLengthStep;
     }
 
     /**
@@ -80,7 +65,7 @@ final class ExceptionShortener
      */
     public function processTrace(string $traceString): string
     {
-        if (mb_strlen(json_encode($traceString)) <= $this->maxTraceSize) {
+        if (mb_strlen((string) json_encode($traceString)) <= $this->maxTraceSize) {
             return $traceString;
         }
 
@@ -89,7 +74,7 @@ final class ExceptionShortener
         }
 
         $traceString = mb_strcut($traceString, 0, $this->maxTraceSize);
-        while (mb_strlen(json_encode($traceString)) > $this->maxTraceSize && $traceString !== '') {
+        while (mb_strlen((string) json_encode($traceString)) > $this->maxTraceSize && $traceString !== '') {
             $traceString = $this->cutStringByStep($traceString);
         }
 
@@ -111,14 +96,14 @@ final class ExceptionShortener
      */
     public function processMessage(string $message): string
     {
-        if (mb_strlen(json_encode($message)) <= $this->maxMessageSize) {
+        if (mb_strlen((string) json_encode($message)) <= $this->maxMessageSize) {
             return $message;
         }
 
         $message = mb_strcut($message, 0, $this->maxMessageSize);
         $capSize = strlen(self::TRIMMED_STRING_CAP);
         // This cycle is needed for faster trimming of Unicode messages
-        while (mb_strlen(json_encode($message)) > $this->maxMessageSize - $capSize && $message !== '') {
+        while (mb_strlen((string) json_encode($message)) > $this->maxMessageSize - $capSize && $message !== '') {
             $message = $this->cutStringByStep($message);
         }
 

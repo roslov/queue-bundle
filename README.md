@@ -275,7 +275,7 @@ final class UserCreatedProducer extends BaseProducer
 
 Add your producers to `old_sound_rabbit_mq.producers`.
 
-Create a producer facade to keep all producer calls in one place, by extending `BaseProducerFacade` and injecting
+Create a producer facade to keep all producer calls in one place by extending `BaseProducerFacade` and injecting
 `EventProcessor`:
 
 ```php
@@ -513,7 +513,7 @@ Note that by default, the `exception_subscriber` is disabled. To enable it, set
 
 The exception subscriber uses the routing key `exception-thrown`.
 
-Example of exception validator class, that can be passed to the `roslov_queue.exception_validator` configuration:
+Example of an exception validator class that can be passed to the `roslov_queue.exception_validator` configuration:
 ```php
 <?php
 final class ExceptionValidator
@@ -550,15 +550,14 @@ In case something happened, and you need to resend the same message again to the
 The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
 
 ```shell
-./vendor/bin/phpunit
+composer test:unit
 ```
 
-### Code style analysis
+### Static analysis
 
-The code style is analyzed with [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) and
-[PSR-12 Ext coding standard](https://github.com/roslov/psr12ext). To run code style analysis:
+To run all static analyzers:
 
 ```shell
-./vendor/bin/phpcs --extensions=php --colors --standard=PSR12Ext --ignore=vendor/* -p -s .
+composer test:static
 ```
 

@@ -14,28 +14,16 @@ use Roslov\QueueBundle\Dto\MessageInterface;
  *
  * @todo Add correlationId implementation.
  */
-final class MessageFactory
+final readonly class MessageFactory
 {
-    /**
-     * @var string Message source
-     */
-    private string $source;
-
-    /**
-     * @var PayloadFactory Payload factory
-     */
-    private PayloadFactory $payloadFactory;
-
     /**
      * Constructor.
      *
      * @param PayloadFactory $payloadFactory Payload factory
      * @param string $source Message source
      */
-    public function __construct(PayloadFactory $payloadFactory, string $source)
+    public function __construct(private PayloadFactory $payloadFactory, private string $source)
     {
-        $this->payloadFactory = $payloadFactory;
-        $this->source = $source;
     }
 
     /**

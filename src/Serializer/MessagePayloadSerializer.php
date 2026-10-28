@@ -13,6 +13,8 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 
+use function assert;
+use function is_object;
 use function json_decode;
 use function json_encode;
 use function mb_strcut;
@@ -28,7 +30,7 @@ use const JSON_THROW_ON_ERROR;
  * This class returns only the payload of a message. At the same time, the serialized string contains additional
  * information like message type, source, correlation id.
  */
-final class MessagePayloadSerializer
+final readonly class MessagePayloadSerializer
 {
     /**
      * Maximum length of a string for an exception message
@@ -36,25 +38,13 @@ final class MessagePayloadSerializer
     private const int MAX_LENGTH = 1000;
 
     /**
-     * @var PayloadFactory Payload factory
-     */
-    private PayloadFactory $payloadFactory;
-
-    /**
-     * @var MessageFactory Message factory
-     */
-    private MessageFactory $messageFactory;
-
-    /**
      * Constructor.
      *
      * @param PayloadFactory $payloadFactory Payload factory
      * @param MessageFactory $messageFactory Message factory
      */
-    public function __construct(PayloadFactory $payloadFactory, MessageFactory $messageFactory)
+    public function __construct(private PayloadFactory $payloadFactory, private MessageFactory $messageFactory)
     {
-        $this->payloadFactory = $payloadFactory;
-        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -87,13 +77,16 @@ final class MessagePayloadSerializer
     public function deserialize(string $json): object
     {
         try {
+            /** @var array{type: string, data: mixed} $message */
             $message = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
             $payloadClass = $this->payloadFactory->getPayloadClassName($message['type']);
+
             $payload = $this->getSerializer()->deserialize(
                 json_encode($message['data'], JSON_THROW_ON_ERROR),
                 $payloadClass,
                 'json',
             );
+            assert(is_object($payload));
         } catch (Throwable $e) {
             throw new DeserializationException('Deserialization failed for JSON: ' . $this->cutString($json), 0, $e);
         }

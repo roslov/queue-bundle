@@ -8,9 +8,8 @@ use InvalidArgumentException;
 use Roslov\QueueBundle\Sender\ExceptionSender;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
@@ -21,24 +20,9 @@ use function sprintf;
 /**
  * Sends an event automatically on exception.
  */
-final class ExceptionSubscriber implements EventSubscriberInterface
+final readonly class ExceptionSubscriber
 {
     private const int HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR = 500;
-
-    /**
-     * @var bool Whether exception subscriber is enabled
-     */
-    private bool $enabled;
-
-    /**
-     * @var object|null The callable object that validates if a notification about the given exception should be sent
-     */
-    private ?object $exceptionValidator;
-
-    /**
-     * @var ExceptionSender Exception sender
-     */
-    private ExceptionSender $exceptionSender;
 
     /**
      * @param bool $enabled Whether the subscriber is enabled
@@ -46,18 +30,16 @@ final class ExceptionSubscriber implements EventSubscriberInterface
      * @param ExceptionSender $exceptionSender Exception sender
      */
     public function __construct(
-        bool $enabled,
-        ?object $exceptionValidator,
-        ExceptionSender $exceptionSender,
+        private bool $enabled,
+        private ?object $exceptionValidator,
+        private ExceptionSender $exceptionSender,
     ) {
-        $this->enabled = $enabled;
-        $this->exceptionValidator = $exceptionValidator;
-        $this->exceptionSender = $exceptionSender;
     }
 
     /**
      * @param object $event Event
      */
+    #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 0)]
     public function notifyException(object $event): void
     {
         if (!$this->enabled) {
@@ -83,6 +65,7 @@ final class ExceptionSubscriber implements EventSubscriberInterface
     /**
      * @param ConsoleErrorEvent $event Event
      */
+    #[AsEventListener(event: ConsoleEvents::ERROR, priority: 0)]
     public function notifyConsoleException(ConsoleErrorEvent $event): void
     {
         if (!$this->enabled) {
@@ -97,21 +80,6 @@ final class ExceptionSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @inheritDoc
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::EXCEPTION => [
-                ['notifyException', 0],
-            ],
-            ConsoleEvents::ERROR => [
-                ['notifyConsoleException', 0],
-            ],
-        ];
-    }
-
-    /**
      * Gets the exception from different possible event instances.
      *
      * @param object $event Event
@@ -120,16 +88,13 @@ final class ExceptionSubscriber implements EventSubscriberInterface
      */
     private function getException(object $event): Throwable
     {
-        if ($event instanceof GetResponseForExceptionEvent) {
-            return $event->getException();
-        }
         if ($event instanceof ExceptionEvent) {
             return $event->getThrowable();
         }
 
         throw new InvalidArgumentException(sprintf(
             'Invalid event object. Allowed: %s or %s',
-            GetResponseForExceptionEvent::class,
+            ExceptionEvent::class,
             ExceptionEvent::class,
         ));
     }

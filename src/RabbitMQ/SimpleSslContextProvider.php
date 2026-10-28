@@ -11,25 +11,20 @@ use OldSound\RabbitMqBundle\Provider\ConnectionParametersProviderInterface;
  *
  * It adds SSL context when needed.
  */
-final class SimpleSslContextProvider implements ConnectionParametersProviderInterface
+final readonly class SimpleSslContextProvider implements ConnectionParametersProviderInterface
 {
-    /**
-     * @var bool Whether SSL connection is enabled
-     */
-    private bool $sslEnabled;
-
     /**
      * Constructor.
      *
      * @param bool $sslEnabled Whether SSL connection is enabled
      */
-    public function __construct(bool $sslEnabled)
+    public function __construct(private bool $sslEnabled)
     {
-        $this->sslEnabled = $sslEnabled;
     }
 
     /**
      * @inheritDoc
+     * @phpstan-ignore missingType.iterableValue
      */
     public function getConnectionParameters(): array
     {

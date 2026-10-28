@@ -42,6 +42,7 @@ final class RoslovQueueBundleTest extends TestCase
                 break;
             }
         }
+
         $this->assertTrue($hasPass, 'PayloadMappingPass should be registered.');
     }
 
@@ -58,28 +59,33 @@ final class RoslovQueueBundleTest extends TestCase
         // Required service definitions
         $factoryDef = new Definition(PayloadFactory::class, [[]]);
         $factoryDef->setPublic(true);
+
         $container->setDefinition('roslov_queue.payload_factory', $factoryDef);
 
         $serverDef = new Definition(Server::class, [null, null, true, [], null]);
         $serverDef->setPublic(true);
+
         $container->setDefinition('roslov_queue.rpc.server_callback', $serverDef);
 
         // Handler definition
         $handlerDef = new Definition(DummyHandler::class);
         $handlerDef->setPublic(true);
         $handlerDef->setAutoconfigured(true);
+
         $container->setDefinition(DummyHandler::class, $handlerDef);
 
         // Autoconfigured DTOs
         $dtoDef = new Definition(DummyDto::class);
         $dtoDef->setAutoconfigured(true);
+
         $container->setDefinition(DummyDto::class, $dtoDef);
 
         $cmdDef = new Definition(DummyCommandDto::class);
         $cmdDef->setAutoconfigured(true);
+
         $container->setDefinition(DummyCommandDto::class, $cmdDef);
 
-        $container->compile();
+        $container->compile(true);
 
         /** @var array<string, string> $mapping */
         $mapping = $container->getDefinition('roslov_queue.payload_factory')->getArgument(0);

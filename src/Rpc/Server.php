@@ -13,41 +13,14 @@ use Roslov\QueueBundle\Exception\InvalidHandlerRpcServerException;
 use Roslov\QueueBundle\Exception\UnsupportedCommandRpcServerException;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
 
-use function get_class;
 use function is_callable;
 use function sprintf;
 
 /**
  * RPC server.
  */
-final class Server
+final readonly class Server
 {
-    /**
-     * @var MessagePayloadSerializer Message payload serializer
-     */
-    private MessagePayloadSerializer $serializer;
-
-    /**
-     * @var EntityManagerInterface|null Entity manager
-     */
-    private ?EntityManagerInterface $em = null;
-
-    /**
-     * @var bool Whether RPC server is enabled
-     */
-    private bool $enabled;
-
-    /**
-     * @var array<string, HandlerInterface> Handlers (command class name => handler service)
-     */
-    private array $handlers;
-
-    /**
-     * @var object|null The callable object that has to be run before message processing
-     * (for example, DB connection refresh)
-     */
-    private ?object $setup = null;
-
     /**
      * Constructor.
      *
@@ -59,17 +32,12 @@ final class Server
      * (for example, DB connection refresh)
      */
     public function __construct(
-        MessagePayloadSerializer $serializer,
-        ?EntityManagerInterface $em,
-        bool $enabled,
-        array $handlers,
-        ?object $setup,
+        private MessagePayloadSerializer $serializer,
+        private ?EntityManagerInterface $em,
+        private bool $enabled,
+        private array $handlers,
+        private ?object $setup,
     ) {
-        $this->em = $em;
-        $this->serializer = $serializer;
-        $this->enabled = $enabled;
-        $this->handlers = $handlers;
-        $this->setup = $setup;
     }
 
     /**
@@ -96,9 +64,11 @@ final class Server
         if (!$this->enabled) {
             throw new LogicException('The RPC server should be enabled in the configuration.');
         }
+
         if (is_callable($this->setup)) {
             ($this->setup)();
         }
+
         $this->refreshEntityManager();
         $command = $this->serializer->deserialize($msg->getBody());
         $result = $this->handle($command);
@@ -115,9 +85,10 @@ final class Server
      */
     private function handle(object $command): object
     {
-        $class = get_class($command);
+        $class = $command::class;
         $handler = $this->handlers[$class] ?? null;
         if ($handler !== null) {
+            /** @phpstan-ignore instanceof.alwaysTrue */
             if (!$handler instanceof HandlerInterface) {
                 throw new InvalidHandlerRpcServerException(sprintf(
                     'Handler "%s" should implement "%s".',
@@ -137,7 +108,7 @@ final class Server
      */
     private function refreshEntityManager(): void
     {
-        if ($this->em !== null) {
+        if ($this->em instanceof EntityManagerInterface) {
             $this->em->clear();
         }
     }
