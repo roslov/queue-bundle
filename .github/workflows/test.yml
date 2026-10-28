@@ -39,7 +39,8 @@ jobs:
           - 8.3
           - 8.4
           - 8.5
-          - 8.6
+# TODO: Uncomment after fixing PHP 8.6 compatibility with Composer Normalizer
+#          - 8.6
 
     steps:
       - name: Checkout
