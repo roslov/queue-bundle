@@ -13,7 +13,8 @@ description: >-
 - `src/DependencyInjection/Configuration.php`:
   `roslov_queue` tree, defaults, `info()`/`example()`, `DEFAULT_PAYLOADS`.
 - `src/DependencyInjection/RoslovQueueExtension.php`:
-  `load()`: loads `services.yaml`, replaces arguments by index; `prepend()`: RabbitMQ config.
+  Extends `Symfony\Component\DependencyInjection\Extension\Extension`; `load()`: loads `services.yaml`, replaces
+  arguments by index; `prepend()`: RabbitMQ config.
 - `src/Resources/config/services.yaml`:
   `roslov_queue.*` definitions with placeholder arguments and public aliases.
 - `src/DependencyInjection/Compiler/PayloadMappingPass.php`:
@@ -36,6 +37,8 @@ description: >-
   `null` and raise `LogicException` with a clear message when used without configuration.
 - Keep `PayloadMappingPass` precedence: explicit YAML types > attribute types > defaults; conflicting attribute types
   throw `LogicException`; clean temporary parameters and tags after processing.
+- `RoslovQueueExtension` extends `Symfony\Component\DependencyInjection\Extension\Extension` (not the deprecated
+  `Symfony\Component\HttpKernel\DependencyInjection\Extension`) to ensure compatibility across Symfony 6, 7, and 8.
 
 ---
 
