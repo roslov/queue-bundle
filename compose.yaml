@@ -1,0 +1,23 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                PHP_VERSION: 8.3-cli
+                COMPOSER_VERSION: 2
+        user: "${UID:-1000}:${GID:-1000}"
+        environment:
+            COMPOSER_HOME: /tmp/composer
+        volumes:
+            - .:/app
+        working_dir: /app
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        environment:
+            RABBITMQ_DEFAULT_USER: guest
+            RABBITMQ_DEFAULT_PASS: guest
+        ports:
+            - "5672:5672"
+            - "15672:15672"
