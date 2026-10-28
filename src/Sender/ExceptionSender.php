@@ -10,6 +10,9 @@ use Roslov\QueueBundle\Helper\ExceptionShortener;
 use Roslov\QueueBundle\Producer\BaseProducerFacade;
 use Throwable;
 
+use function get_class;
+use function gethostname;
+
 /**
  * Sends an event about an exception.
  */

@@ -26,8 +26,8 @@ interface ClientInterface
      *
      * @return object Response
      *
-     * @throws TimeoutRpcClientException On timeout
      * @throws RequestIdNotFoundRpcClientException If the requested reply was not received
+     * @throws TimeoutRpcClientException On timeout
      */
     public function call(object $command, string $exchangeName, int $timeout = self::TIMEOUT): object;
 }

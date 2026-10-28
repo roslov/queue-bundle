@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Roslov\QueueBundle\DependencyInjection;
 
+use Roslov\QueueBundle\DependencyInjection\Compiler\PayloadMappingPass;
 use Roslov\QueueBundle\Producer\ExceptionThrownProducer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,6 +12,12 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+
+use function array_keys;
+use function array_merge;
+use function is_array;
+use function ltrim;
+use function md5;
 
 /**
  * Queue extension.
@@ -35,12 +42,25 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
 
         $emRef = $config['entity_manager'] !== null ? new Reference($config['entity_manager']) : null;
 
+        $configuredPayloadTypes = $this->getConfiguredPayloadTypes($configs);
+        if ($configuredPayloadTypes !== []) {
+            $container->setParameter(
+                PayloadMappingPass::CONFIGURED_PAYLOAD_TYPES_PARAM,
+                $configuredPayloadTypes,
+            );
+        }
+
+        $payloadMapping = array_merge(
+            Configuration::DEFAULT_PAYLOADS,
+            $config['payload_mapping'],
+        );
+
         $container->getDefinition('roslov_queue.subscriber.event_sender')
             ->replaceArgument(1, $config['event_processor']['delayed_delivery_subscriber']);
         $container->getDefinition('roslov_queue.message_factory')
             ->replaceArgument(1, $config['service_name']);
         $container->getDefinition('roslov_queue.payload_factory')
-            ->replaceArgument(0, $config['payload_mapping']);
+            ->replaceArgument(0, $payloadMapping);
         $container->getDefinition('roslov_queue.rabbitmq.simple_ssl_context_provider')
             ->replaceArgument(0, $config['ssl_enabled']);
         $container->getDefinition('roslov_queue.rpc.server_callback')
@@ -157,5 +177,38 @@ final class RoslovQueueExtension extends Extension implements PrependExtensionIn
     private function getServerQueueName(array $serverConfig): string
     {
         return 'roslov-queue-' . md5($serverConfig['connection'] . $serverConfig['exchange']);
+    }
+
+    /**
+     * Returns explicitly configured payload types from raw configs.
+     *
+     * @param array<array<string, mixed>> $configs Raw configs
+     *
+     * @return list<string> Configured payload types
+     */
+    private function getConfiguredPayloadTypes(array $configs): array
+    {
+        $types = [];
+        foreach ($configs as $rawConfig) {
+            $mapping = $rawConfig['payload_mapping'] ?? null;
+            if (is_array($mapping)) {
+                $this->collectPayloadTypes($types, $mapping);
+            }
+        }
+
+        return $types;
+    }
+
+    /**
+     * Collects payload types from a raw mapping array.
+     *
+     * @param list<string> $types Types list
+     * @param array<string, mixed> $mapping Raw mapping
+     */
+    private function collectPayloadTypes(array &$types, array $mapping): void
+    {
+        foreach (array_keys($mapping) as $type) {
+            $types[] = (string) $type;
+        }
     }
 }

@@ -13,6 +13,13 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 
+use function json_decode;
+use function json_encode;
+use function mb_strcut;
+use function mb_strlen;
+
+use const JSON_THROW_ON_ERROR;
+
 /**
  * Message payload serializer.
  *

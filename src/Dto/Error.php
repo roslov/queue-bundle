@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Roslov\QueueBundle\Dto;
 
+use Roslov\QueueBundle\Attribute\AsQueuePayload;
+
 /**
  * Queue error DTO
  */
+#[AsQueuePayload('Error')]
 final class Error
 {
     /**

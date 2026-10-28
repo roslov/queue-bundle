@@ -6,6 +6,14 @@ namespace Roslov\QueueBundle\Helper;
 
 use LogicException;
 
+use function array_pop;
+use function explode;
+use function implode;
+use function json_encode;
+use function mb_strcut;
+use function mb_strlen;
+use function strlen;
+
 /**
  * Checks whether the exception trace and message strings are bigger than their limits and accurately shortens it.
  */

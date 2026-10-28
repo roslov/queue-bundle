@@ -15,6 +15,9 @@ use Roslov\QueueBundle\Producer\ProducerLocator;
 use Roslov\QueueBundle\Serializer\MessagePayloadSerializer;
 use Throwable;
 
+use function microtime;
+use function sprintf;
+
 /**
  * Stores events into DB and sends them to the queue.
  */

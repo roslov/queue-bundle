@@ -11,25 +11,28 @@ use Roslov\QueueBundle\Dto\Trigger;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+use function json_encode;
+use function method_exists;
+
 /**
  * Queue configuration.
  */
 final class Configuration implements ConfigurationInterface
 {
     /**
-     * Tree main node name
-     */
-    private const NODE_NAME = 'roslov_queue';
-
-    /**
      * Default message type to payload mapping
      */
-    private const DEFAULT_PAYLOADS = [
+    public const DEFAULT_PAYLOADS = [
         'Error' => Error::class,
         'Trigger' => Trigger::class,
         'Response.Empty' => EmptyResponse::class,
         'Exception.Thrown' => ExceptionThrown::class,
     ];
+
+    /**
+     * Tree main node name
+     */
+    private const NODE_NAME = 'roslov_queue';
 
     /**
      * @inheritDoc
@@ -67,6 +70,7 @@ final class Configuration implements ConfigurationInterface
                     ->info('Key/value pair of the mapping of message type to payload')
                     ->example(json_encode(self::DEFAULT_PAYLOADS))
                     ->useAttributeAsKey('name')
+                    ->defaultValue(self::DEFAULT_PAYLOADS)
                     ->scalarPrototype()->end()
                 ->end()
                 ->arrayNode('event_processor')

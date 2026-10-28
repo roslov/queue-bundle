@@ -72,13 +72,11 @@ roslov_queue:
     handlers: []
       # Put your handlers here:
       # App\Dto\Queue\GetUserCommand: App\Rpc\UserHandler
-  # Message type to payload mapping. Extend this array with your payloads
-  payload_mapping:
-    Error: Roslov\QueueBundle\Dto\Error
-    Trigger: Roslov\QueueBundle\Dto\Trigger
-    Response.Empty: Roslov\QueueBundle\Dto\EmptyResponse
-    Exception.Thrown: Roslov\QueueBundle\Dto\ExceptionThrown
-    # Put your payloads here
+  # Message type to payload mapping. Default payloads (Error, Trigger, Response.Empty, Exception.Thrown)
+  # are registered automatically. You can also map custom DTOs using the `#[AsQueuePayload]` attribute directly on
+  # your DTO classes instead of configuring them here.
+  # payload_mapping:
+  #   UserUpdated: App\Dto\Queue\UserUpdated
   # By default, exception_subscriber is turned off
   exception_subscriber:
     # Whether exception subscriber should be enabled. If enabled, `exception_sender.exchange_options` is required
@@ -164,7 +162,40 @@ The serialized message has the following JSON structure:
 - `correlationId`: A unique ID for message tracking (currently not implemented, but present for future use).
 - `data`: The actual payload — your DTO serialized to JSON.
 
-To let the bundle know which DTO class to use for a specific message type, you must add it to the `roslov_queue.payload_mapping` configuration:
+To let the bundle know which DTO class to use for a specific message type, you can use the `#[AsQueuePayload]` attribute
+directly on your DTO class:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Dto\Queue;
+
+use Roslov\QueueBundle\Attribute\AsQueuePayload;
+
+#[AsQueuePayload('UserUpdated')]
+final class UserUpdated
+{
+    private int $id;
+
+    private string $name;
+
+    // getters and setters...
+}
+```
+
+For RPC commands, you can also specify the RPC handler directly in the attribute:
+
+```php
+#[AsQueuePayload('GetUserCommand', rpcHandler: App\Rpc\UserHandler::class)]
+final class GetUserCommand
+{
+    // ...
+}
+```
+
+Alternatively, you can configure the mapping in `roslov_queue.payload_mapping` (and `roslov_queue.rpc_server.handlers`):
 
 ```yaml
 roslov_queue:
@@ -173,12 +204,18 @@ roslov_queue:
     UserUpdated: App\Dto\Queue\UserUpdated
 ```
 
-The message type (the key in the mapping) will be used as the `type` field in the serialized JSON.
+Default payloads (`Error`, `Trigger`, `Response.Empty`, `Exception.Thrown`) are registered automatically and do not need
+to be declared. If needed, you can override default payloads or attribute mappings by specifying them explicitly in the
+YAML configuration.
+
+The message type (passed to `#[AsQueuePayload]` or defined as the key in the mapping) will be used as the `type` field
+in the serialized JSON.
 
 
 ### Consumers and producers
 
-Create DTOs that will be used in consumers and producers, and add them to `roslov_queue.payload_mapping` (see examples).
+Create DTOs that will be used in consumers and producers, annotated with `#[AsQueuePayload]` or added to
+`roslov_queue.payload_mapping` (see examples).
 
 Create a consumer that uses `Roslov\QueueBundle\Serializer\MessagePayloadSerializer` as a serializer:
 
@@ -405,7 +442,9 @@ final class UserProvider
 }
 ```
 
-For an RPC server, add handlers that process commands and return results:
+For an RPC server, add handlers that process commands and return results. You can define the handler directly in the
+command DTO using `#[AsQueuePayload('GetUserCommand', rpcHandler: App\Rpc\UserHandler::class)]`, or configure it in
+`roslov_queue.rpc_server.handlers`:
 
 ```yaml
 # config/packages/roslov_queue.yaml
