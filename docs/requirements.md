@@ -11,14 +11,14 @@ The bundle is distributed via Packagist and is consumed by downstream services (
 
 ## Supported platforms
 
-| Component                     | Supported versions                                   | Source                       |
-|-------------------------------|------------------------------------------------------|------------------------------|
-| PHP                           | `^8.3` (CI matrix: 8.3, 8.4, 8.5; 8.6 is pending)    | `composer.json`, CI          |
-| PHP extensions                | `json`, `mbstring`, `sockets`                        | `composer.json`              |
-| Symfony                       | `^6.0 \|\| ^7.0` (config, DI, framework, serializer) | `composer.json`              |
-| RabbitMQ bundle               | `php-amqplib/rabbitmq-bundle ^2.12`                  | `composer.json`              |
-| Doctrine ORM                  | `^3.2` (required by Composer)                        | `composer.json`              |
-| Database for the outbox       | MySQL (only supported option)                        | `README.md`                  |
+| Component               | Supported versions                                   | Source              |
+|-------------------------|------------------------------------------------------|---------------------|
+| PHP                     | `^8.3` (CI matrix: 8.3, 8.4, 8.5; 8.6 is pending)    | `composer.json`, CI |
+| PHP extensions          | `json`, `mbstring`, `sockets`                        | `composer.json`     |
+| Symfony                 | `^6.0 \|\| ^7.0` (config, DI, framework, serializer) | `composer.json`     |
+| RabbitMQ bundle         | `php-amqplib/rabbitmq-bundle ^2.12`                  | `composer.json`     |
+| Doctrine ORM            | `^3.2 \|\| ^4.0` (required by Composer)              | `composer.json`     |
+| Database for the outbox | MySQL (only supported option)                        | `README.md`         |
 
 ## Functional requirements
 
