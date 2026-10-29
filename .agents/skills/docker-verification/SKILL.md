@@ -82,6 +82,9 @@ Docker access may require running the command outside the agent sandbox (the Doc
 - CI (`.github/workflows/unit-tests.yml`, `static.yml`, `compatibility-tests.yml`) runs `composer update` on PHP 8.3,
   8.4, and 8.5. When a change might behave differently on newer PHP, mention it in the report; the only local image
   required is PHP 8.3.
+- The compatibility matrix (`.github/workflows/compatibility-tests.yml`) tests combinations of PHP (8.3, 8.4, 8.5),
+  Symfony (6.0, 6.4, 7.0, 7.4, 8.0), RabbitMQ bundle (baseline 2.19.0; earlier versions 2.12 and 2.15 are removed),
+  and Doctrine ORM (3.2.0, 3.3.4, 3.7.5).
 
 ---
 

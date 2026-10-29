@@ -15,6 +15,7 @@ It is based on [RabbitMQ bundle](https://github.com/php-amqplib/RabbitMqBundle).
 
 - PHP 8.3 or higher
 - Symfony 6.0 or higher
+- RabbitMQ bundle 2.19 or higher
 - Doctrine bundle (optional)
 - MySQL DB (optional)
 
