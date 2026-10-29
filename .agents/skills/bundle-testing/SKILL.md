@@ -93,6 +93,19 @@ missing EM -> `LogicException`, `sendAll()` dry run and ordered send/remove loop
   `old_sound_rabbit_mq.event_exception_thrown_producer`, then assert on the JSON passed to `send()`.
   Back up and restore `$_SERVER['REQUEST_URI']`.
 
+### 6. Consumer events & EventSenderSubscriber
+
+Testing direct `sendEvents()` calls does not verify attribute-based event listener registrations. Use reflection
+to extract `#[AsEventListener]` attributes and register them onto a Symfony `EventDispatcher`:
+
+- Read attributes using `$refClass->getMethods()` and `$method->getAttributes(AsEventListener::class)`.
+- Register each listener with:
+  `$dispatcher->addListener($listener->event, [$subscriber, $method->getName()], $listener->priority)`.
+- Dispatch concrete consumer events (`OnConsumeEvent`, `AfterProcessingMessageEvent`) using a data provider returning
+  `Iterator` (`YieldDataProviderRector`).
+- Verify enabled behavior: `$em->clear()` and `$repository->findOneBy()` are invoked for `sendAll(false)`.
+- Verify disabled behavior: `$em->clear()` is invoked and `$repository` is never queried for `sendAll(true)` (dry run).
+
 ---
 
 ## Running Tests (inside the PHP 8.3 container)

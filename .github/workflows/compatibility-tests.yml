@@ -46,8 +46,6 @@ jobs:
 
         rabbitmq-bundle:
           - 2.19.0
-          - 2.15.0
-          - 2.12.0
 
         orm:
           - 3.7.5
@@ -61,18 +59,9 @@ jobs:
             symfony: "8.0"
 
           - symfony: "8.0"
-            rabbitmq-bundle: 2.15.0
-          - symfony: "8.0"
-            rabbitmq-bundle: 2.12.0
-          - symfony: "8.0"
             orm: 3.3.4
           - symfony: "8.0"
             orm: 3.2.0
-
-          - symfony: "7.4"
-            rabbitmq-bundle: 2.12.0
-          - symfony: "7.0"
-            rabbitmq-bundle: 2.12.0
 
     steps:
       - name: Checkout

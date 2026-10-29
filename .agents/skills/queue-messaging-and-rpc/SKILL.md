@@ -24,8 +24,9 @@ description: >-
   Base classes and locator for application event dispatching.
 - **Event processor**: `src/Processor/EventProcessor.php`, `src/Entity/Event.php`
   Supports instant delivery and transactional outbox.
-- **Outbox flushing**: `src/Subscriber/EventSenderSubscriber.php`
-  Flushes events on `kernel.terminate` and AMQP consume events.
+- **Outbox sending**: `src/Subscriber/EventSenderSubscriber.php`
+  Sends stored events on `kernel.terminate` (`KernelEvents::TERMINATE`), AMQP consume (`OnConsumeEvent::NAME`),
+  and message completion (`AfterProcessingMessageEvent::NAME`). Requires `php-amqplib/rabbitmq-bundle ^2.19`.
 - **RPC**: `src/Rpc/{Client,ClientInterface,Server,HandlerInterface}.php`
   Default RPC timeout is 15 seconds.
 - **Exception events**: `src/Subscriber/ExceptionSubscriber.php`, `src/Sender/ExceptionSender.php`,
@@ -41,6 +42,8 @@ description: >-
 - `ProducerLocator` service naming (`old_sound_rabbit_mq.<name>_producer`) must not change.
 - The outbox `event` table schema in `README.md` must match `src/Entity/Event.php`.
 - Bundle exceptions extend `Roslov\QueueBundle\Exception\Exception`; add new ones under `src/Exception`.
+- The RabbitMQ bundle baseline is `^2.19` (`php-amqplib/rabbitmq-bundle`); outbox event listeners listen to
+  concrete event names `OnConsumeEvent::NAME` and `AfterProcessingMessageEvent::NAME`.
 
 ---
 
